@@ -567,6 +567,152 @@
       </tags>
   </entry>
   <entry>
+    <title>深入Salsforce前端框架(三)</title>
+    <url>/2021/12/25/Salesforce_FrontendFrameworksIII/</url>
+    <content><![CDATA[<h1 id="深入Salsforce前端框架-三"><a href="#深入Salsforce前端框架-三" class="headerlink" title="深入Salsforce前端框架(三)"></a>深入Salsforce前端框架(三)</h1><p>上一篇主要介绍了Aura组件的核心设计架构，让大家对组件化的设计思想，事件驱动架构，以及Lightning Locker Service有了基本的认识。此篇会着重介绍Lightning Web Component组件，让大家对lwc组件的核心以及相关的web标准有更深刻的体会。</p>
+<h2 id="什么是-Lightning-Web-Component-LWC"><a href="#什么是-Lightning-Web-Component-LWC" class="headerlink" title="什么是 Lightning Web Component (LWC)?"></a>什么是 Lightning Web Component (LWC)?</h2><p>LWC是Salesforce基于最新的Web标准构建的开源前端框架。LWC引入了许多新的Web标准技术去开发组件,比如 Web Component, Templates, shadow DOM,并且支持ECMAScript 6及以上版本中可用的新语言.作为Aura的替代品,LWC组件能与Aura组件共存，交互，共通构建Lightning应用。</p>
+<h2 id="LWC诞生背景"><a href="#LWC诞生背景" class="headerlink" title="LWC诞生背景"></a>LWC诞生背景</h2><p>2014年，Salesforce就推出了Lightning Component和Aura框架，开发者可以在平台上构建组件化的应用。虽然当时前端技术还没有迎来爆发性的增长，但通过aura bundle生成的组件，虽然在服务端渲染，但性能还是可圈可点的。借助aura:event也可以完成组件间的消息传递。<br>在这期间很多互联网厂商也推出了自己的开源UI框架：React,Angular,vue…三驾马车，也是通过组件化的方式来构建大型的web应用。此时不同的框架就像是不同的语言，每个框架都有自己的一套体系。虽然都是基于js的框架，不同框架的语法和数据交互方式却各不相同，这间接的提高了前端开发人员的学习成本。<br>在这种神仙打架的背景下，web标准化的需求更为迫切。在<a href="https://www.w3.org/"> <strong>W3C</strong></a>&#x2F;<a href="https://whatwg.org/"> <strong>WHATWG</strong></a>&#x2F;和Salesforce成员之一的ECMAScript技术委员会(TC39)推动下，过去几年，我们见证了web标准前所未有的发展速度，过去五年制定的标准包括:</p>
+<ul>
+<li>ECMAScript <a href="https://www.ecma-international.org/ecma-262/6.0/"> <strong>2015 (6)</strong></a>, <a href="https://www.ecma-international.org/ecma-262/7.0/%22"> <strong>2015 (6)</strong></a> ,<a href="https://www.ecma-international.org/ecma-262/6.0/"> <strong>2016 (7)</strong></a>, <a href="https://www.ecma-international.org/ecma-262/8.0/index.html"> <strong>2017 (8)</strong></a>,<a href="https://www.ecma-international.org/ecma-262/9.0/index.html%22"> <strong>2018 (9)</strong></a>, </li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components"> <strong>Web components</strong></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements"> <strong>Custom elements</strong></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots"> <strong>Templates and slots</strong></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM"><strong>Shadow DOM</strong></a></li>
+</ul>
+<h2 id="Web-Components-更多标准，更少框架"><a href="#Web-Components-更多标准，更少框架" class="headerlink" title="Web Components- 更多标准，更少框架"></a>Web Components- 更多标准，更少框架</h2><p><img src="/2021/12/25/Salesforce_FrontendFrameworksIII/LWC_00000.PNG" alt="LWC_00000.png"></p>
+<p>上图是官方给出的LWC组件的部分特性,黄色部分的Web Standards，说白了就是浏览器原生支持的组件，比如Custom elements（自定义元素），Shadow DOM（影子DOM）都是 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components"> <strong>Web Components API</strong></a>的一部分。相比框架本身，不用加载任何外部模块，代码量小，浏览器直接就可以编译,渲染DOM。  </p>
+<p>利用Web Component API能开发浏览器可以直接编译，渲染的原生组件，创建的组件不用加载任何外部模块，而且具备更好的性能，因为组件的核心特性是在web引擎中本地实现的，而不是在框架抽象的JavaScript中实现的。  </p>
+<p>开发人员只要掌握了Web Componnet API,就具备了开发LWC组件的能力。另外学习Web Component的过程会让我们对Lwc中使用的Web技术有更深刻的体会。  </p>
+<p>推荐两个学习的地方：</p>
+<ol>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components#%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BD%BF%E7%94%A8"> <strong>MDN-Web Components</strong></a> : MDN Web Docs 是一个提供 Web 技术和促进 Web 技术软件的不断发展的学习平台，在这里能获取到最新的WEB标准的API，比较权威。</li>
+<li>阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2019/08/web_components.html"><strong>Web Components 入门实例教程</strong></a></li>
+</ol>
+<h2 id="LWC-Open-Source"><a href="#LWC-Open-Source" class="headerlink" title="LWC Open Source"></a>LWC Open Source</h2><p>LWC与其他Salesforce UI框架的一个重要区别就是它可以脱离Salesforce平台使用。比如在heroku中你也可以配合其他的后端语言去构建Web应用。</p>
+<p>Git的<a href="https://github.com/salesforce/lwc"> <strong>open-source repository</strong></a>中提供的LWC源码(LWC编译器和引擎代码)领先于Salesforce平台上提供的代码。LWC的大部分功能最终会在Salesforce平台上发布。</p>
+<ul>
+<li>lwc.dev中提供的一些特性是不能用于在Salesforce平台上构建的Lwc组件的。<a href="https://lwc.dev/"> <strong>Lwc dev文档</strong></a>中对这些特别的地方会有相应的说明。</li>
+<li>在Lightning Platform上构建Lwc组件和在平台外构建Lwc的区别请参考<a href="https://developer.salesforce.com/blogs/2019/06/differences-between-building-lightning-web-components-on-lightning-platform-and-open-source"> <strong>LWC: OpenSource VS Lightning Platform</strong></a></li>
+<li>通过npm ‘create-lwc-app’ 可以在本地创建Lwc项目</li>
+<li>Lwc提供了一个线上编译环境<a href="https://webcomponents.dev/create/lwc"> <strong>Online playground</strong></a>,我们可以可以在上面编译调试代码。</li>
+</ul>
+<h2 id="为什么要引入LWC"><a href="#为什么要引入LWC" class="headerlink" title="为什么要引入LWC?"></a>为什么要引入LWC?</h2><p>虽然使用Aura框架就可以完成组件化的开发需求,开发难度其实也不复杂(Aura还是很好上手的),而且作为终端用户在使用这两种组件时体验还差不多，那为什么需要Lwc呢？</p>
+<p><img src="/2021/12/25/Salesforce_FrontendFrameworksIII/LWC_00001.PNG" alt="LWC_00001.png"></p>
+<h3 id="标准化开发-Standard-Development"><a href="#标准化开发-Standard-Development" class="headerlink" title="标准化开发(Standard Development)"></a>标准化开发(Standard Development)</h3><p>  组件化开发目前是前端主流的开发方式，按照这种设计思想做成的画面在代码复用,提高应用扩展性方面有着无可比拟的优势。现在流行的React，Vue，包括Salsforce自己的Aura框架都是组件化的框架。但是呢, 他们都不是浏览器原生支持的。比如，浏览器不支持React的jsx语法，不支持js模块化写法，如果不依靠框架自身去解析，编译，代码是无法在浏览器中执行的。Aura也一样，脱离了salesforce的服务器是玩不转的，不管是<a href="aura:component">aura:component</a>或者是组件中的js代码，都首先会在salesforce上编译为浏览器能识别的的html,js文件，浏览器才会去编译。</p>
+<p>  <strong>web component</strong>是web原生提供的封装组件的方式，是通过浏览器引擎提供api接口直接进行操作的。web components通过一种标准化的非侵入的方式封装一个组件，可以将HTML 结构、CSS 样式和javascript代码隐藏起来，并与页面上的其它代码相隔离。<br>  比起aura, lwc利用web component实现的组件是在浏览器上直接渲染，而aura的cmp，js controller其实是在服务端渲染生成html后返回给客户端的。所以呢，Lwc框架在本地开发也玩得转！</p>
+<h3 id="性能更佳-Better-execution-x2F-Performance"><a href="#性能更佳-Better-execution-x2F-Performance" class="headerlink" title="性能更佳(Better execution&#x2F;Performance)"></a>性能更佳(Better execution&#x2F;Performance)</h3><p>LWC得到了浏览器的原生支持,所以组件在执行时需要执行的代码相比较aura会更少，这意味着它加载会更快。使用浏览器基本都支持的自定义的事件CustomEvent()去完成组件间的信息传递，显然会比aura:event传参有更高的效率。</p>
+<h3 id="更好的安全性-Better-security-features"><a href="#更好的安全性-Better-security-features" class="headerlink" title="更好的安全性(Better security features)"></a>更好的安全性(Better security features)</h3><p>利用Web Component的一些特性，比如shadow Dom, 加强了组件对局部视图封装能力。CSS, DOM,JS以及Event都被封装在一个作用域下，这更契合组件化开发的实质。</p>
+<ul>
+<li><p>强制使用Strict Mode<br>Lightning Locker Service会隐式启用JavaScript严格模式。您不需要在代码中指定” use strict”。JavaScript严格模式使代码更加安全、健壮和可支持。</p>
+</li>
+<li><p><a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.security_locker_global_access">Secure Wrappers</a><br>Lightning Locker将一部分全局对象做了封装,使访问DOM更安全。</p>
+<ul>
+<li>window → SecureWindow</li>
+<li>document → SecureDocument</li>
+<li>object → SecureObject</li>
+<li>element → SecureObject</li>
+<li>LightningElement → SecureLightningElement</li>
+<li>template → SecureTemplate</li>
+</ul>
+</li>
+<li><p>控制组件间的DOM访问<br>组件只能访问它创建的DOM元素。Lightning web组件中<strong>不能使用window或document全局对象</strong>就是这个原因。<br>比如, html api中会使用document.querySelector(“#demo”)去查找某个元素，但是在开发lwc时只能使用this.template.querySelector(“#demo”)去获取元素。</p>
+</li>
+<li><p>限制访问部分Salesforce全局变量<br>Lightning Locker阻止了对一些全局JavaScript对象的访问,这些变量要么已被弃用，要么会导致跨框架依赖。  </p>
+<ul>
+<li>$A</li>
+<li>Aura</li>
+<li>Sfdc</li>
+<li>sforce</li>
+</ul>
+</li>
+<li><p>内容安全策略(Content Security Policy)<br>Lightning Component框架使用内容安全策略(CSP) (Content Security Policy)来控制页面上可加载的内容来源，CSP是W3C标准。CSP有助于防止跨站脚本(XSS)和其他代码注入攻击。所有CSP规则都在页面级工作，并适用于所有组件和库。</p>
+</li>
+<li><p>从Apex调用API<br>对于Apex callout，您的代码处理身份验证，可能不太安全，对于OAuth实现来说尤其复杂。Salesforce管理所有指定命名凭据作为调用端点的调用的身份验证，这样您就不必这样做了。对于命名凭据中定义的站点，还可以跳过远程站点设置，否则到外部站点的调出将需要远程站点设置。</p>
+</li>
+</ul>
+<p>更详尽的Lwc安全机制的资料请参考官方文档的<a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.security_intro">Develop Secure Code</a>  </p>
+<h3 id="ECMAScript-ES6"><a href="#ECMAScript-ES6" class="headerlink" title="ECMAScript ES6+"></a>ECMAScript ES6+</h3><p>  Lwc对ES6和ES7有了更好的支持，而aura只支持ES5。在lwc中我们可以使用箭头函数，Classes,Modules等一些js新的语法。<br>  下边列出了LWC框架支持的js内容：</p>
+<ul>
+<li>ECMAScript  <ul>
+<li>ES6 (ECMAScript 2015)</li>
+<li>ES7 (ECMAScript 2016)</li>
+<li>ES8 (ECMAScript 2017)—excluding Shared Memory and Atomics</li>
+<li>ES9 (ECMAScript 2018)—including only Object Spread Properties (not Object Rest Properties)</li>
+</ul>
+</li>
+<li>Templates and slots</li>
+<li>Decorators</li>
+<li>Modules</li>
+<li>Promises</li>
+<li>Classes</li>
+<li>Modules</li>
+<li>Promises</li>
+<li>Decorators</li>
+<li>Web Components</li>
+<li>Custom Elements</li>
+<li>Shadow DOM</li>
+</ul>
+<h3 id="单向数据绑定"><a href="#单向数据绑定" class="headerlink" title="单向数据绑定"></a>单向数据绑定</h3><p>Aura使用的双向数据绑定有时会出现各种问题，lwc使用单向数据绑定。单向数据流动可以跟踪，流动单一，追查问题的时候可以跟快捷。</p>
+<h3 id="可复用的Js"><a href="#可复用的Js" class="headerlink" title="可复用的Js"></a>可复用的Js</h3><p>在Lwc中可以编写只有js文件的组件作为共通js文件被其他组件import。</p>
+<h3 id="可以编写Js测试类"><a href="#可以编写Js测试类" class="headerlink" title="可以编写Js测试类"></a>可以编写Js测试类</h3><p>我们可以使用Jest为所有的Lightning web组件编写单元测试来测试js代码。</p>
+<h2 id="支持LWC的浏览器"><a href="#支持LWC的浏览器" class="headerlink" title="支持LWC的浏览器"></a>支持LWC的浏览器</h2><table>
+<thead>
+<tr>
+<th>Sno.</th>
+<th>Browser</th>
+<th>Version</th>
+<th>Limitations</th>
+<th>Links</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Microsoft Internet Explorer</td>
+<td>IE 11 &amp; above</td>
+<td>Components work in compatibility mode, so performance suffers.</td>
+<td><a href="https://help.salesforce.com/articleView?id=getstart_browser_considerations_ie.htm&type=5#getstart_browser_considerations_ie">参考链接</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Microsoft Edge</td>
+<td>15+</td>
+<td>Developer Console doesn’t support Microsoft Edge</td>
+<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_edge.htm&type=5">参考链接</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Google Chrome</td>
+<td>59+</td>
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Mozilla Firefox</td>
+<td>54+</td>
+<td>currently doesn’t support Private Browsing.</td>
+<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_firefox.htm&type=5">参考链接</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Apple Safari</td>
+<td>12.x+</td>
+<td>Salesforce currently doesn’t support Analytics with Apple Safari.</td>
+<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_safari.htm&type=5">参考链接</a></td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce前端框架</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Salesforce前端框架</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入Salsforce前端框架(二)</title>
     <url>/2021/12/20/Salesforce_FrontendFrameworksII/</url>
     <content><![CDATA[<h1 id="深入Salsforce前端框架-二"><a href="#深入Salsforce前端框架-二" class="headerlink" title="深入Salsforce前端框架(二)"></a>深入Salsforce前端框架(二)</h1><p>此篇会结合官方开发者文档，着重介绍一下Lightning Aura组件。使小伙伴们在学习该组件的具体用法前，对组件的核心特性有一个基本认识。</p>
@@ -732,152 +878,6 @@
 <li>组件只能访问到由本组件代码创建生成的DOM。</li>
 <li>Locker Services为我们的组件添加了命名空间，防止组件代码直接从其他命名空间的组件访问数据。</li>
 </ul>
-]]></content>
-      <categories>
-        <category>Salesforce</category>
-        <category>Salesforce前端框架</category>
-      </categories>
-      <tags>
-        <tag>Salesforce</tag>
-        <tag>Lightning</tag>
-        <tag>Salesforce前端框架</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深入Salsforce前端框架(三)</title>
-    <url>/2021/12/25/Salesforce_FrontendFrameworksIII/</url>
-    <content><![CDATA[<h1 id="深入Salsforce前端框架-三"><a href="#深入Salsforce前端框架-三" class="headerlink" title="深入Salsforce前端框架(三)"></a>深入Salsforce前端框架(三)</h1><p>上一篇主要介绍了Aura组件的核心设计架构，让大家对组件化的设计思想，事件驱动架构，以及Lightning Locker Service有了基本的认识。此篇会着重介绍Lightning Web Component组件，让大家对lwc组件的核心以及相关的web标准有更深刻的体会。</p>
-<h2 id="什么是-Lightning-Web-Component-LWC"><a href="#什么是-Lightning-Web-Component-LWC" class="headerlink" title="什么是 Lightning Web Component (LWC)?"></a>什么是 Lightning Web Component (LWC)?</h2><p>LWC是Salesforce基于最新的Web标准构建的开源前端框架。LWC引入了许多新的Web标准技术去开发组件,比如 Web Component, Templates, shadow DOM,并且支持ECMAScript 6及以上版本中可用的新语言.作为Aura的替代品,LWC组件能与Aura组件共存，交互，共通构建Lightning应用。</p>
-<h2 id="LWC诞生背景"><a href="#LWC诞生背景" class="headerlink" title="LWC诞生背景"></a>LWC诞生背景</h2><p>2014年，Salesforce就推出了Lightning Component和Aura框架，开发者可以在平台上构建组件化的应用。虽然当时前端技术还没有迎来爆发性的增长，但通过aura bundle生成的组件，虽然在服务端渲染，但性能还是可圈可点的。借助aura:event也可以完成组件间的消息传递。<br>在这期间很多互联网厂商也推出了自己的开源UI框架：React,Angular,vue…三驾马车，也是通过组件化的方式来构建大型的web应用。此时不同的框架就像是不同的语言，每个框架都有自己的一套体系。虽然都是基于js的框架，不同框架的语法和数据交互方式却各不相同，这间接的提高了前端开发人员的学习成本。<br>在这种神仙打架的背景下，web标准化的需求更为迫切。在<a href="https://www.w3.org/"> <strong>W3C</strong></a>&#x2F;<a href="https://whatwg.org/"> <strong>WHATWG</strong></a>&#x2F;和Salesforce成员之一的ECMAScript技术委员会(TC39)推动下，过去几年，我们见证了web标准前所未有的发展速度，过去五年制定的标准包括:</p>
-<ul>
-<li>ECMAScript <a href="https://www.ecma-international.org/ecma-262/6.0/"> <strong>2015 (6)</strong></a>, <a href="https://www.ecma-international.org/ecma-262/7.0/%22"> <strong>2015 (6)</strong></a> ,<a href="https://www.ecma-international.org/ecma-262/6.0/"> <strong>2016 (7)</strong></a>, <a href="https://www.ecma-international.org/ecma-262/8.0/index.html"> <strong>2017 (8)</strong></a>,<a href="https://www.ecma-international.org/ecma-262/9.0/index.html%22"> <strong>2018 (9)</strong></a>, </li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components"> <strong>Web components</strong></a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements"> <strong>Custom elements</strong></a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots"> <strong>Templates and slots</strong></a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM"><strong>Shadow DOM</strong></a></li>
-</ul>
-<h2 id="Web-Components-更多标准，更少框架"><a href="#Web-Components-更多标准，更少框架" class="headerlink" title="Web Components- 更多标准，更少框架"></a>Web Components- 更多标准，更少框架</h2><p><img src="/2021/12/25/Salesforce_FrontendFrameworksIII/LWC_00000.PNG" alt="LWC_00000.png"></p>
-<p>上图是官方给出的LWC组件的部分特性,黄色部分的Web Standards，说白了就是浏览器原生支持的组件，比如Custom elements（自定义元素），Shadow DOM（影子DOM）都是 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components"> <strong>Web Components API</strong></a>的一部分。相比框架本身，不用加载任何外部模块，代码量小，浏览器直接就可以编译,渲染DOM。  </p>
-<p>利用Web Component API能开发浏览器可以直接编译，渲染的原生组件，创建的组件不用加载任何外部模块，而且具备更好的性能，因为组件的核心特性是在web引擎中本地实现的，而不是在框架抽象的JavaScript中实现的。  </p>
-<p>开发人员只要掌握了Web Componnet API,就具备了开发LWC组件的能力。另外学习Web Component的过程会让我们对Lwc中使用的Web技术有更深刻的体会。  </p>
-<p>推荐两个学习的地方：</p>
-<ol>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components#%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BD%BF%E7%94%A8"> <strong>MDN-Web Components</strong></a> : MDN Web Docs 是一个提供 Web 技术和促进 Web 技术软件的不断发展的学习平台，在这里能获取到最新的WEB标准的API，比较权威。</li>
-<li>阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2019/08/web_components.html"><strong>Web Components 入门实例教程</strong></a></li>
-</ol>
-<h2 id="LWC-Open-Source"><a href="#LWC-Open-Source" class="headerlink" title="LWC Open Source"></a>LWC Open Source</h2><p>LWC与其他Salesforce UI框架的一个重要区别就是它可以脱离Salesforce平台使用。比如在heroku中你也可以配合其他的后端语言去构建Web应用。</p>
-<p>Git的<a href="https://github.com/salesforce/lwc"> <strong>open-source repository</strong></a>中提供的LWC源码(LWC编译器和引擎代码)领先于Salesforce平台上提供的代码。LWC的大部分功能最终会在Salesforce平台上发布。</p>
-<ul>
-<li>lwc.dev中提供的一些特性是不能用于在Salesforce平台上构建的Lwc组件的。<a href="https://lwc.dev/"> <strong>Lwc dev文档</strong></a>中对这些特别的地方会有相应的说明。</li>
-<li>在Lightning Platform上构建Lwc组件和在平台外构建Lwc的区别请参考<a href="https://developer.salesforce.com/blogs/2019/06/differences-between-building-lightning-web-components-on-lightning-platform-and-open-source"> <strong>LWC: OpenSource VS Lightning Platform</strong></a></li>
-<li>通过npm ‘create-lwc-app’ 可以在本地创建Lwc项目</li>
-<li>Lwc提供了一个线上编译环境<a href="https://webcomponents.dev/create/lwc"> <strong>Online playground</strong></a>,我们可以可以在上面编译调试代码。</li>
-</ul>
-<h2 id="为什么要引入LWC"><a href="#为什么要引入LWC" class="headerlink" title="为什么要引入LWC?"></a>为什么要引入LWC?</h2><p>虽然使用Aura框架就可以完成组件化的开发需求,开发难度其实也不复杂(Aura还是很好上手的),而且作为终端用户在使用这两种组件时体验还差不多，那为什么需要Lwc呢？</p>
-<p><img src="/2021/12/25/Salesforce_FrontendFrameworksIII/LWC_00001.PNG" alt="LWC_00001.png"></p>
-<h3 id="标准化开发-Standard-Development"><a href="#标准化开发-Standard-Development" class="headerlink" title="标准化开发(Standard Development)"></a>标准化开发(Standard Development)</h3><p>  组件化开发目前是前端主流的开发方式，按照这种设计思想做成的画面在代码复用,提高应用扩展性方面有着无可比拟的优势。现在流行的React，Vue，包括Salsforce自己的Aura框架都是组件化的框架。但是呢, 他们都不是浏览器原生支持的。比如，浏览器不支持React的jsx语法，不支持js模块化写法，如果不依靠框架自身去解析，编译，代码是无法在浏览器中执行的。Aura也一样，脱离了salesforce的服务器是玩不转的，不管是<a href="aura:component">aura:component</a>或者是组件中的js代码，都首先会在salesforce上编译为浏览器能识别的的html,js文件，浏览器才会去编译。</p>
-<p>  <strong>web component</strong>是web原生提供的封装组件的方式，是通过浏览器引擎提供api接口直接进行操作的。web components通过一种标准化的非侵入的方式封装一个组件，可以将HTML 结构、CSS 样式和javascript代码隐藏起来，并与页面上的其它代码相隔离。<br>  比起aura, lwc利用web component实现的组件是在浏览器上直接渲染，而aura的cmp，js controller其实是在服务端渲染生成html后返回给客户端的。所以呢，Lwc框架在本地开发也玩得转！</p>
-<h3 id="性能更佳-Better-execution-x2F-Performance"><a href="#性能更佳-Better-execution-x2F-Performance" class="headerlink" title="性能更佳(Better execution&#x2F;Performance)"></a>性能更佳(Better execution&#x2F;Performance)</h3><p>LWC得到了浏览器的原生支持,所以组件在执行时需要执行的代码相比较aura会更少，这意味着它加载会更快。使用浏览器基本都支持的自定义的事件CustomEvent()去完成组件间的信息传递，显然会比aura:event传参有更高的效率。</p>
-<h3 id="更好的安全性-Better-security-features"><a href="#更好的安全性-Better-security-features" class="headerlink" title="更好的安全性(Better security features)"></a>更好的安全性(Better security features)</h3><p>利用Web Component的一些特性，比如shadow Dom, 加强了组件对局部视图封装能力。CSS, DOM,JS以及Event都被封装在一个作用域下，这更契合组件化开发的实质。</p>
-<ul>
-<li><p>强制使用Strict Mode<br>Lightning Locker Service会隐式启用JavaScript严格模式。您不需要在代码中指定” use strict”。JavaScript严格模式使代码更加安全、健壮和可支持。</p>
-</li>
-<li><p><a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.security_locker_global_access">Secure Wrappers</a><br>Lightning Locker将一部分全局对象做了封装,使访问DOM更安全。</p>
-<ul>
-<li>window → SecureWindow</li>
-<li>document → SecureDocument</li>
-<li>object → SecureObject</li>
-<li>element → SecureObject</li>
-<li>LightningElement → SecureLightningElement</li>
-<li>template → SecureTemplate</li>
-</ul>
-</li>
-<li><p>控制组件间的DOM访问<br>组件只能访问它创建的DOM元素。Lightning web组件中<strong>不能使用window或document全局对象</strong>就是这个原因。<br>比如, html api中会使用document.querySelector(“#demo”)去查找某个元素，但是在开发lwc时只能使用this.template.querySelector(“#demo”)去获取元素。</p>
-</li>
-<li><p>限制访问部分Salesforce全局变量<br>Lightning Locker阻止了对一些全局JavaScript对象的访问,这些变量要么已被弃用，要么会导致跨框架依赖。  </p>
-<ul>
-<li>$A</li>
-<li>Aura</li>
-<li>Sfdc</li>
-<li>sforce</li>
-</ul>
-</li>
-<li><p>内容安全策略(Content Security Policy)<br>Lightning Component框架使用内容安全策略(CSP) (Content Security Policy)来控制页面上可加载的内容来源，CSP是W3C标准。CSP有助于防止跨站脚本(XSS)和其他代码注入攻击。所有CSP规则都在页面级工作，并适用于所有组件和库。</p>
-</li>
-<li><p>从Apex调用API<br>对于Apex callout，您的代码处理身份验证，可能不太安全，对于OAuth实现来说尤其复杂。Salesforce管理所有指定命名凭据作为调用端点的调用的身份验证，这样您就不必这样做了。对于命名凭据中定义的站点，还可以跳过远程站点设置，否则到外部站点的调出将需要远程站点设置。</p>
-</li>
-</ul>
-<p>更详尽的Lwc安全机制的资料请参考官方文档的<a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.security_intro">Develop Secure Code</a>  </p>
-<h3 id="ECMAScript-ES6"><a href="#ECMAScript-ES6" class="headerlink" title="ECMAScript ES6+"></a>ECMAScript ES6+</h3><p>  Lwc对ES6和ES7有了更好的支持，而aura只支持ES5。在lwc中我们可以使用箭头函数，Classes,Modules等一些js新的语法。<br>  下边列出了LWC框架支持的js内容：</p>
-<ul>
-<li>ECMAScript  <ul>
-<li>ES6 (ECMAScript 2015)</li>
-<li>ES7 (ECMAScript 2016)</li>
-<li>ES8 (ECMAScript 2017)—excluding Shared Memory and Atomics</li>
-<li>ES9 (ECMAScript 2018)—including only Object Spread Properties (not Object Rest Properties)</li>
-</ul>
-</li>
-<li>Templates and slots</li>
-<li>Decorators</li>
-<li>Modules</li>
-<li>Promises</li>
-<li>Classes</li>
-<li>Modules</li>
-<li>Promises</li>
-<li>Decorators</li>
-<li>Web Components</li>
-<li>Custom Elements</li>
-<li>Shadow DOM</li>
-</ul>
-<h3 id="单向数据绑定"><a href="#单向数据绑定" class="headerlink" title="单向数据绑定"></a>单向数据绑定</h3><p>Aura使用的双向数据绑定有时会出现各种问题，lwc使用单向数据绑定。单向数据流动可以跟踪，流动单一，追查问题的时候可以跟快捷。</p>
-<h3 id="可复用的Js"><a href="#可复用的Js" class="headerlink" title="可复用的Js"></a>可复用的Js</h3><p>在Lwc中可以编写只有js文件的组件作为共通js文件被其他组件import。</p>
-<h3 id="可以编写Js测试类"><a href="#可以编写Js测试类" class="headerlink" title="可以编写Js测试类"></a>可以编写Js测试类</h3><p>我们可以使用Jest为所有的Lightning web组件编写单元测试来测试js代码。</p>
-<h2 id="支持LWC的浏览器"><a href="#支持LWC的浏览器" class="headerlink" title="支持LWC的浏览器"></a>支持LWC的浏览器</h2><table>
-<thead>
-<tr>
-<th>Sno.</th>
-<th>Browser</th>
-<th>Version</th>
-<th>Limitations</th>
-<th>Links</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td>Microsoft Internet Explorer</td>
-<td>IE 11 &amp; above</td>
-<td>Components work in compatibility mode, so performance suffers.</td>
-<td><a href="https://help.salesforce.com/articleView?id=getstart_browser_considerations_ie.htm&type=5#getstart_browser_considerations_ie">参考链接</a></td>
-</tr>
-<tr>
-<td>2</td>
-<td>Microsoft Edge</td>
-<td>15+</td>
-<td>Developer Console doesn’t support Microsoft Edge</td>
-<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_edge.htm&type=5">参考链接</a></td>
-</tr>
-<tr>
-<td>3</td>
-<td>Google Chrome</td>
-<td>59+</td>
-<td>NA</td>
-<td>NA</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Mozilla Firefox</td>
-<td>54+</td>
-<td>currently doesn’t support Private Browsing.</td>
-<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_firefox.htm&type=5">参考链接</a></td>
-</tr>
-<tr>
-<td>5</td>
-<td>Apple Safari</td>
-<td>12.x+</td>
-<td>Salesforce currently doesn’t support Analytics with Apple Safari.</td>
-<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_safari.htm&type=5">参考链接</a></td>
-</tr>
-</tbody></table>
 ]]></content>
       <categories>
         <category>Salesforce</category>
