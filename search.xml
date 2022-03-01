@@ -1,176 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Aura组件属性</title>
-    <url>/2022/02/26/Salesforce_AuraAttributes/</url>
-    <content><![CDATA[<h1 id="Aura的组件属性"><a href="#Aura的组件属性" class="headerlink" title="Aura的组件属性"></a>Aura的组件属性</h1><h2 id="如何理解组件的attribute"><a href="#如何理解组件的attribute" class="headerlink" title="如何理解组件的attribute?"></a>如何理解组件的attribute?</h2><p>在前端组件化开发中,都会引入state的概念。我们要把组件看成一个状态机。通过与用户的交互,实现不同状态,然后渲染UI,让用户界面和数据保持一致。  </p>
-<p>在Lightning Aura组件中, 我们通过改变组件的attribute来改变组件的状态。Aura的组件属性类似与Apex中类的成员变量,你可以在整个组件中显示、操作这些变量,从而改变组件的state,然后UI重新渲染,使画面上显示的数据和aura attribute的值保持一致。</p>
-<p>如此看来,aura attribute实际上有两个主要目的:</p>
-<ul>
-<li><p>存储交互的数据</p>
-</li>
-<li><p>组件之间交换数据。</p>
-</li>
+    <title>Aura组件ID</title>
+    <url>/2022/02/26/Salesforce_AuraComponentId/</url>
+    <content><![CDATA[<h1 id="组件的ID"><a href="#组件的ID" class="headerlink" title="组件的ID"></a>组件的ID</h1><p>HTML文档是一棵DOM树,树上有很多节点,每个节点一般都会有id属性,id属性具有唯一性,在同一个文档中不能重复,id是该节点的唯一标识。而Aura的组件元素中并不支持Id属性,它有两种类型的ID: Local ID和Global ID。local ID用于定位画面中的aura元素,global ID用于区分同一组件的多个实例,有时在调试代码时也会用到。</p>
+<h2 id="Local-IDs"><a href="#Local-IDs" class="headerlink" title="Local IDs"></a>Local IDs</h2><ul>
+<li>使用aura:id属性为组件创建的ID叫local ID,通过component.find(local ID)方法可以获取画面中的aura元素。</li>
+<li>local id 理论上是唯一的,但并不强制唯一。比如一组checkbox元素标签,可以给他们设置相同的local id。这时通过component.find(local ID)方法获取到的是元素列表。</li>
+<li>aura:id不支持表达式,只能用普通的字符串值作为元素的local id。</li>
+<li>只有Aura元素才可以定义aura:id,原生的html标签是没有该属性的。</li>
 </ul>
-<h2 id="重置组件的attribute？"><a href="#重置组件的attribute？" class="headerlink" title="重置组件的attribute？"></a>重置组件的attribute？</h2><p>当画面刷新后,组件的state就会被浏览器释放掉。因为我们的组件属性都是存储在浏览器内存中的,所以一旦刷新页面,attribute也会回到初始状态。</p>
-<h2 id="为组件定义attribute"><a href="#为组件定义attribute" class="headerlink" title="为组件定义attribute"></a>为组件定义attribute</h2><p>语法：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;**&quot;</span> <span class="attr">type</span>=<span class="string">&quot;**&quot;</span> <span class="attr">default</span>=<span class="string">&quot;**&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true/false&quot;</span> <span class="attr">access</span>=<span class="string">&quot;**&quot;</span> <span class="attr">description</span>=<span class="string">&quot;**&quot;</span>&gt;</span> </span><br></pre></td></tr></table></figure>
-
-<p>name：必要字段,属性的名称<br>type：必要字段,属性的类型,支持的类型见下面的“属性type支持的类型”<br>default：非必要字段,默认值类型与type一致。<br>required：非必要字段,标记该属性是否为必须字段。true：表该字段为必要字段；false：表该字段为非必要字段。<br>access: 非必要字段,表该属性是否可被所属命名空间之外使用。public(默认)：所有命名空间皆可用；global：应用内可使用；private: 组件内可使用。<br>description: 非必要字段,对该属性进行简单的描述。</p>
 <p>例:</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;strAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;intAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button&quot;</span> <span class="attr">press</span>=<span class="string">&quot;&#123;!c.increment&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;&#123;!v.intAttribute ? v.intAttribute : 0&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在controller.js中通过component.find(‘button1’) 可以获取到ui:button元素。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button1&quot;</span> <span class="attr">label</span>=<span class="string">&quot;button1&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">increment</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt, helper</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> prev = cmp.get(<span class="string">&quot;v.intAttribute&quot;</span>);</span><br><span class="line">        cmp.set(<span class="string">&quot;v.intAttribute&quot;</span>, prev ? prev + <span class="number">1</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>getLocalId():</strong> 此方法用于获取组件元素的local id, 通常用于通过事件获取事件的元素组件以后,获取元素组件的local id;</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取指定元素的locaL Id</span></span><br><span class="line">component.find(<span class="string">&quot;buttonId&quot;</span>).getLocalId()</span><br><span class="line"><span class="comment">// 通过事件源元素的locaL Id</span></span><br><span class="line">event.getSource().getLocalId()</span><br></pre></td></tr></table></figure>
 
-<p>看上面的例子,<br>所有attribute标签都有一个name和type属性,还可以通过指定required属性指定attribute是否为必需的,也可以为attribute指定一个默认值。<br>你可以使用{!expression}语法。例如{!v.intAttribute}允许你访问intAttribute属性。<br>当按下button后会执行increment方法,然后通过cmp.get(“xxx”)方法获取画面中intAttribute属性的值,通过cmp.set(‘xxx’)方法为attribute重新赋值后,画面的UI部分也会随之更新。</p>
-<h2 id="Attribute的命名规则"><a href="#Attribute的命名规则" class="headerlink" title="Attribute的命名规则"></a>Attribute的命名规则</h2><ul>
-<li>必须以字母或者下划线开头</li>
-<li>必须只包含字母、数字或下划线</li>
-</ul>
-<h2 id="Attribute的类型"><a href="#Attribute的类型" class="headerlink" title="Attribute的类型"></a>Attribute的类型</h2><p>aura组件支持不同类型的属性,如Boolean、Integer、String、Number 等,以及复杂的Object类型和更加复杂的functions和Facets类型。</p>
-<ul>
-<li>基础类型：Boolean、Date、DateTime、Decimal、Double、Integer、Long、String 等</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>attribute类型</th>
-<th>声明方式</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Boolean</td>
-<td>&lt;aura:attribute name&#x3D;”typeBoolean” type&#x3D;”Boolean” default&#x3D;”false”&#x2F;&gt;</td>
-<td>有效值为true或false。若要设置默认值true,请添加default&#x3D;”true”。</td>
-</tr>
-<tr>
-<td>Date</td>
-<td>&lt;aura:attribute name&#x3D;”typeDate” type&#x3D;”Date” default&#x3D;”2013-03-06T10:17:36.789Z”&#x2F;&gt;</td>
-<td>日期类型,格式为：yyyy-mm-dd。hh:mm:ss没有保存,要包含时间字段,请使用DateTime类型</td>
-</tr>
-<tr>
-<td>DateTime</td>
-<td>&lt;aura:attribute name&#x3D;”typeDateTime” type&#x3D;”DateTime”  default&#x3D;”123456789” &#x2F;&gt;</td>
-<td>日期类型,对应时间戳格式。保存了除了日期,还保存了时间,并且精确到毫秒。</td>
-</tr>
-<tr>
-<td>Decimal</td>
-<td>&lt;aura:attribute name&#x3D;”typeDecimal” type&#x3D;”Decimal” default&#x3D;”122.62” &#x2F;&gt;</td>
-<td>十进制,可以包括小数部分。对应Java.math.BigDecimal,精度高于Double类型。针对货币字段,一般选择该类型。</td>
-</tr>
-<tr>
-<td>Double</td>
-<td>&lt;aura:attribute name&#x3D;”typeDouble” type&#x3D;”Double” default&#x3D;”12.1”&#x2F;&gt;</td>
-<td>Double类型,可以包含小数位。对应Java.lang.Double。</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td>&lt;aura:attribute name&#x3D;”typeInteger” type&#x3D;”Integer” default&#x3D;”1”&#x2F;&gt;</td>
-<td>整数类型,不包含小数位。对应Java.lang.Integer。</td>
-</tr>
-<tr>
-<td>Long</td>
-<td>&lt;aura:attribute name&#x3D;”typeLong” type&#x3D;”Long”  default&#x3D;”123”&#x2F;&gt;</td>
-<td>长整型,不包含小数位。对应Java.lang.Long。</td>
-</tr>
-<tr>
-<td>String</td>
-<td>&lt;aura:attribute name&#x3D;”typeString” type&#x3D;”String” default&#x3D;”welcome to salesforce”&#x2F;&gt;</td>
-<td>字符串类型。</td>
-</tr>
-</tbody></table>
-<p>可以使用数组来保存一组基础类型的多个值：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;favoriteColors&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String[]&quot;</span> <span class="attr">default</span>=<span class="string">&quot;[&#x27;red&#x27;,&#x27;green&#x27;,&#x27;blue&#x27;]&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Eg:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button_local_id&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Get Local ID&quot;</span> <span class="attr">onClick</span>=<span class="string">&quot;&#123;!c.getInput&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:outputText</span> <span class="attr">aura:id</span>=<span class="string">&quot;outName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;text&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><p>函数类型<br> 属性的类型是Javascript中的某个函数。如果子组件具有该类型的属性，可传递回调函数给父组件。</p>
-<p> &lt;aura:attribute name&#x3D;”callback” type&#x3D;”Function” &#x2F;&gt;<br> 注意：该类型不适用于服务端,仅在客户端使用。</p>
-</li>
-<li><p>对象类型<br>属性是一个Object。<br>&lt;aura:attribute name&#x3D;”data” type&#x3D;”Object” &#x2F;&gt;<br>注意：一般情况下,不建议使用该类型。object类型的属性在传递至服务端时,会将所有的东西序列化为字符串,此时如果使用深度表达（例如：v.data.property）,则会抛出字符串没有该属性的异常。因此,尽量使用type&#x3D;”Map”,防止出现反序列化等问题。</p>
-</li>
-<li><p>标准或自定义对象类型<br>属性支持标准或自定义对象的类型。注意：用户至少对该对象具有读取权限,否则组件虽然不会报错,但是页面不会加载。</p>
-<!--标准对象-->
-<p>&lt;aura:attribute name&#x3D;”account” type&#x3D;”Account” &#x2F;&gt;</p>
-<!--自定义对象-->
-<p>&lt;aura:attribute name&#x3D;”employee” type&#x3D;”Employee__c” &#x2F;&gt;</p>
-</li>
-<li><p>集合类型</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>声明方式</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>type<a href="Array"></a></td>
-<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”String[]” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
-<td>自定义数组</td>
-</tr>
-<tr>
-<td>List</td>
-<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”List” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
-<td>有序的列表</td>
-</tr>
-<tr>
-<td>Map</td>
-<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
-<td>key:value集合。key不可重复。如果不设置默认值,则在Javascript中默认设为null。如果想设置空值,可写为：default&#x3D;”{}”</td>
-</tr>
-<tr>
-<td>Set</td>
-<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
-<td>集合,无序,不含重复元素。</td>
-</tr>
-</tbody></table>
-<ul>
-<li>Apex Class类型<br> 该类型属性对应一个Apex类。type类型大小写不敏感,例如这里可以写成demoauracontroller。<br> 存在某个自定义Apex类：DemoAuraController.cls<!--存在名为：DemoAuraController.cls的Apex类-->
-&lt;aura:attribute name&#x3D;”data” type&#x3D;”DemoAuraController” &#x2F;&gt;</li>
-</ul>
-<p> Aura.Component、Aura.Component[]指定框架类型固有型。</p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>声明方式</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Aura.Component</td>
-<td>N&#x2F;A</td>
-<td>一个单独的组件。相比较而言,官方推荐使用Aura:component[]类型。</td>
-</tr>
-<tr>
-<td>Aura.Component[]</td>
-<td>&lt;aura:attribute name&#x3D;”detail” type&#x3D;”Aura.Component[]”&gt;</td>
-<td>利用该类型可以设置一个类型块。</td>
-</tr>
-<tr>
-<td>Aura.Action</td>
-<td>&lt;aura：attribute name &#x3D;“ onclick” type &#x3D;“ Aura.Action” &#x2F;&gt;</td>
-<td>使用此类型,可以将action传递给组件。</td>
-</tr>
-</tbody></table>
-<h2 id="从静态资源或者label中引入默认值"><a href="#从静态资源或者label中引入默认值" class="headerlink" title="从静态资源或者label中引入默认值"></a>从静态资源或者label中引入默认值</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">implements</span>=<span class="string">&quot;flexipage:AvailableForAllPageTypes&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;profileImage&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Resource.profileImage&#125;&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;categoryName&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Label.c.categoryName&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- Stand-alone static resources image file--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;!v.profileImage&#125;&quot;</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- custom label --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        &#123;!v.categoryName&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">getInput: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> localId = cmp.find(<span class="string">&#x27;button_local_id&#x27;</span>).getLocalId(); <span class="comment">// button_local_id</span></span><br><span class="line">    <span class="keyword">var</span> myText = cmp.find(<span class="string">&#x27;outName&#x27;</span>);</span><br><span class="line">    myText.set(<span class="string">&#x27;v.value&#x27;</span>, localId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="在js中处理Attribute"><a href="#在js中处理Attribute" class="headerlink" title="在js中处理Attribute"></a>在js中处理Attribute</h2><ol>
-<li>component.get(String key): 通过attribute name,来获取 attribute中存放的值。</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">component.get(<span class="string">&quot;v.myAttribute&quot;</span>); <span class="comment">// 获取组件中attribute名为myAttribute的值；</span></span><br></pre></td></tr></table></figure>
+<h2 id="Global-ID"><a href="#Global-ID" class="headerlink" title="Global ID"></a>Global ID</h2><p>Global ID是组件实例化时为组件生成的唯一Id。在组件实例化时生成意味着global Id是动态的Id,所以在每一次调用组件时获得的global Id都是不同的。global Id可以用来区分组件元素的多个实例或者用于debugging操作。</p>
+<p><img src="/2022/02/26/Salesforce_AuraComponentId/Aura_GlobalId.PNG" alt="Aura_GlobalId.PNG"></p>
+<p>可以使用global Id作为元素的前缀或后缀为HTML元素创建唯一的ID。</p>
+<p>例如  </p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;&#123;!globalId + &#x27;_footer&#x27;&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>2.component.set(String key, Object value):通过attribute name,为 attribute分配新值。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">component.set(<span class="string">&quot;v.myAttribute&quot;</span>, <span class="string">&#x27;This is a New Value&#x27;</span>); <span class="comment">// 为myAttribute属性分配新值</span></span><br></pre></td></tr></table></figure>
-
-<p>对于复杂类型的attribute,比如集合类型(如Map)或者Object。也可以直接修改对象的内部属性。例如，这段代码在user属性中为firstName属性设置一个新值。</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Map&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">default</span>=<span class="string">&quot;&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;id&#x27;: 99,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;firstName&#x27;: &#x27;Eunice&#x27;,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;lastName&#x27;: &#x27;Gomez&#x27;&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>First Name: &#123;!v.user.firstName&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.deepSet&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Deep Set&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>onclick方法执行时,在controller.js中调用deepSet方法为user属性设置新值。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">deepSet</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">        component.set(<span class="string">&quot;v.user.firstName&quot;</span>, <span class="string">&quot;Nina&quot;</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>使用getGlobalId()方法在JavaScript中获取组件元素的GlobalId。</p>
+<blockquote>
+<p>var globalId &#x3D; cmp.getGlobalId();</p>
+</blockquote>
+<p>如果要根据元素的global Id去获取元素, 需要使用全局对象$A</p>
+<blockquote>
+<p>var cmp &#x3D; $A.getComponent(globalId)</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Retrieve Global Id from JavaScript:</span></span><br><span class="line">component.getGlobalId()</span><br><span class="line">component.find(“buttonId”).getGlobalId()</span><br><span class="line">event.getSource().getGlobalId() </span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>Salesforce</category>
@@ -382,42 +248,176 @@
       </tags>
   </entry>
   <entry>
-    <title>Aura组件ID</title>
-    <url>/2022/02/26/Salesforce_AuraComponentId/</url>
-    <content><![CDATA[<h1 id="组件的ID"><a href="#组件的ID" class="headerlink" title="组件的ID"></a>组件的ID</h1><p>HTML文档是一棵DOM树,树上有很多节点,每个节点一般都会有id属性,id属性具有唯一性,在同一个文档中不能重复,id是该节点的唯一标识。而Aura的组件元素中并不支持Id属性,它有两种类型的ID: Local ID和Global ID。local ID用于定位画面中的aura元素,global ID用于区分同一组件的多个实例,有时在调试代码时也会用到。</p>
-<h2 id="Local-IDs"><a href="#Local-IDs" class="headerlink" title="Local IDs"></a>Local IDs</h2><ul>
-<li>使用aura:id属性为组件创建的ID叫local ID,通过component.find(local ID)方法可以获取画面中的aura元素。</li>
-<li>local id 理论上是唯一的,但并不强制唯一。比如一组checkbox元素标签,可以给他们设置相同的local id。这时通过component.find(local ID)方法获取到的是元素列表。</li>
-<li>aura:id不支持表达式,只能用普通的字符串值作为元素的local id。</li>
-<li>只有Aura元素才可以定义aura:id,原生的html标签是没有该属性的。</li>
+    <title>Aura组件属性</title>
+    <url>/2022/02/26/Salesforce_AuraAttributes/</url>
+    <content><![CDATA[<h1 id="Aura的组件属性"><a href="#Aura的组件属性" class="headerlink" title="Aura的组件属性"></a>Aura的组件属性</h1><h2 id="如何理解组件的attribute"><a href="#如何理解组件的attribute" class="headerlink" title="如何理解组件的attribute?"></a>如何理解组件的attribute?</h2><p>在前端组件化开发中,都会引入state的概念。我们要把组件看成一个状态机。通过与用户的交互,实现不同状态,然后渲染UI,让用户界面和数据保持一致。  </p>
+<p>在Lightning Aura组件中, 我们通过改变组件的attribute来改变组件的状态。Aura的组件属性类似与Apex中类的成员变量,你可以在整个组件中显示、操作这些变量,从而改变组件的state,然后UI重新渲染,使画面上显示的数据和aura attribute的值保持一致。</p>
+<p>如此看来,aura attribute实际上有两个主要目的:</p>
+<ul>
+<li><p>存储交互的数据</p>
+</li>
+<li><p>组件之间交换数据。</p>
+</li>
 </ul>
+<h2 id="重置组件的attribute？"><a href="#重置组件的attribute？" class="headerlink" title="重置组件的attribute？"></a>重置组件的attribute？</h2><p>当画面刷新后,组件的state就会被浏览器释放掉。因为我们的组件属性都是存储在浏览器内存中的,所以一旦刷新页面,attribute也会回到初始状态。</p>
+<h2 id="为组件定义attribute"><a href="#为组件定义attribute" class="headerlink" title="为组件定义attribute"></a>为组件定义attribute</h2><p>语法：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;**&quot;</span> <span class="attr">type</span>=<span class="string">&quot;**&quot;</span> <span class="attr">default</span>=<span class="string">&quot;**&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true/false&quot;</span> <span class="attr">access</span>=<span class="string">&quot;**&quot;</span> <span class="attr">description</span>=<span class="string">&quot;**&quot;</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>name：必要字段,属性的名称<br>type：必要字段,属性的类型,支持的类型见下面的“属性type支持的类型”<br>default：非必要字段,默认值类型与type一致。<br>required：非必要字段,标记该属性是否为必须字段。true：表该字段为必要字段；false：表该字段为非必要字段。<br>access: 非必要字段,表该属性是否可被所属命名空间之外使用。public(默认)：所有命名空间皆可用；global：应用内可使用；private: 组件内可使用。<br>description: 非必要字段,对该属性进行简单的描述。</p>
 <p>例:</p>
-<p>在controller.js中通过component.find(‘button1’) 可以获取到ui:button元素。</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button1&quot;</span> <span class="attr">label</span>=<span class="string">&quot;button1&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;strAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;intAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button&quot;</span> <span class="attr">press</span>=<span class="string">&quot;&#123;!c.increment&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;&#123;!v.intAttribute ? v.intAttribute : 0&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p><strong>getLocalId():</strong> 此方法用于获取组件元素的local id, 通常用于通过事件获取事件的元素组件以后,获取元素组件的local id;</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取指定元素的locaL Id</span></span><br><span class="line">component.find(<span class="string">&quot;buttonId&quot;</span>).getLocalId()</span><br><span class="line"><span class="comment">// 通过事件源元素的locaL Id</span></span><br><span class="line">event.getSource().getLocalId()</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">increment</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt, helper</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> prev = cmp.get(<span class="string">&quot;v.intAttribute&quot;</span>);</span><br><span class="line">        cmp.set(<span class="string">&quot;v.intAttribute&quot;</span>, prev ? prev + <span class="number">1</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>Eg:</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button_local_id&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Get Local ID&quot;</span> <span class="attr">onClick</span>=<span class="string">&quot;&#123;!c.getInput&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:outputText</span> <span class="attr">aura:id</span>=<span class="string">&quot;outName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;text&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>看上面的例子,<br>所有attribute标签都有一个name和type属性,还可以通过指定required属性指定attribute是否为必需的,也可以为attribute指定一个默认值。<br>你可以使用{!expression}语法。例如{!v.intAttribute}允许你访问intAttribute属性。<br>当按下button后会执行increment方法,然后通过cmp.get(“xxx”)方法获取画面中intAttribute属性的值,通过cmp.set(‘xxx’)方法为attribute重新赋值后,画面的UI部分也会随之更新。</p>
+<h2 id="Attribute的命名规则"><a href="#Attribute的命名规则" class="headerlink" title="Attribute的命名规则"></a>Attribute的命名规则</h2><ul>
+<li>必须以字母或者下划线开头</li>
+<li>必须只包含字母、数字或下划线</li>
+</ul>
+<h2 id="Attribute的类型"><a href="#Attribute的类型" class="headerlink" title="Attribute的类型"></a>Attribute的类型</h2><p>aura组件支持不同类型的属性,如Boolean、Integer、String、Number 等,以及复杂的Object类型和更加复杂的functions和Facets类型。</p>
+<ul>
+<li>基础类型：Boolean、Date、DateTime、Decimal、Double、Integer、Long、String 等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>attribute类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Boolean</td>
+<td>&lt;aura:attribute name&#x3D;”typeBoolean” type&#x3D;”Boolean” default&#x3D;”false”&#x2F;&gt;</td>
+<td>有效值为true或false。若要设置默认值true,请添加default&#x3D;”true”。</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>&lt;aura:attribute name&#x3D;”typeDate” type&#x3D;”Date” default&#x3D;”2013-03-06T10:17:36.789Z”&#x2F;&gt;</td>
+<td>日期类型,格式为：yyyy-mm-dd。hh:mm:ss没有保存,要包含时间字段,请使用DateTime类型</td>
+</tr>
+<tr>
+<td>DateTime</td>
+<td>&lt;aura:attribute name&#x3D;”typeDateTime” type&#x3D;”DateTime”  default&#x3D;”123456789” &#x2F;&gt;</td>
+<td>日期类型,对应时间戳格式。保存了除了日期,还保存了时间,并且精确到毫秒。</td>
+</tr>
+<tr>
+<td>Decimal</td>
+<td>&lt;aura:attribute name&#x3D;”typeDecimal” type&#x3D;”Decimal” default&#x3D;”122.62” &#x2F;&gt;</td>
+<td>十进制,可以包括小数部分。对应Java.math.BigDecimal,精度高于Double类型。针对货币字段,一般选择该类型。</td>
+</tr>
+<tr>
+<td>Double</td>
+<td>&lt;aura:attribute name&#x3D;”typeDouble” type&#x3D;”Double” default&#x3D;”12.1”&#x2F;&gt;</td>
+<td>Double类型,可以包含小数位。对应Java.lang.Double。</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td>&lt;aura:attribute name&#x3D;”typeInteger” type&#x3D;”Integer” default&#x3D;”1”&#x2F;&gt;</td>
+<td>整数类型,不包含小数位。对应Java.lang.Integer。</td>
+</tr>
+<tr>
+<td>Long</td>
+<td>&lt;aura:attribute name&#x3D;”typeLong” type&#x3D;”Long”  default&#x3D;”123”&#x2F;&gt;</td>
+<td>长整型,不包含小数位。对应Java.lang.Long。</td>
+</tr>
+<tr>
+<td>String</td>
+<td>&lt;aura:attribute name&#x3D;”typeString” type&#x3D;”String” default&#x3D;”welcome to salesforce”&#x2F;&gt;</td>
+<td>字符串类型。</td>
+</tr>
+</tbody></table>
+<p>可以使用数组来保存一组基础类型的多个值：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;favoriteColors&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String[]&quot;</span> <span class="attr">default</span>=<span class="string">&quot;[&#x27;red&#x27;,&#x27;green&#x27;,&#x27;blue&#x27;]&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">getInput: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> localId = cmp.find(<span class="string">&#x27;button_local_id&#x27;</span>).getLocalId(); <span class="comment">// button_local_id</span></span><br><span class="line">    <span class="keyword">var</span> myText = cmp.find(<span class="string">&#x27;outName&#x27;</span>);</span><br><span class="line">    myText.set(<span class="string">&#x27;v.value&#x27;</span>, localId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>函数类型<br> 属性的类型是Javascript中的某个函数。如果子组件具有该类型的属性，可传递回调函数给父组件。</p>
+<p> &lt;aura:attribute name&#x3D;”callback” type&#x3D;”Function” &#x2F;&gt;<br> 注意：该类型不适用于服务端,仅在客户端使用。</p>
+</li>
+<li><p>对象类型<br>属性是一个Object。<br>&lt;aura:attribute name&#x3D;”data” type&#x3D;”Object” &#x2F;&gt;<br>注意：一般情况下,不建议使用该类型。object类型的属性在传递至服务端时,会将所有的东西序列化为字符串,此时如果使用深度表达（例如：v.data.property）,则会抛出字符串没有该属性的异常。因此,尽量使用type&#x3D;”Map”,防止出现反序列化等问题。</p>
+</li>
+<li><p>标准或自定义对象类型<br>属性支持标准或自定义对象的类型。注意：用户至少对该对象具有读取权限,否则组件虽然不会报错,但是页面不会加载。</p>
+<!--标准对象-->
+<p>&lt;aura:attribute name&#x3D;”account” type&#x3D;”Account” &#x2F;&gt;</p>
+<!--自定义对象-->
+<p>&lt;aura:attribute name&#x3D;”employee” type&#x3D;”Employee__c” &#x2F;&gt;</p>
+</li>
+<li><p>集合类型</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type<a href="Array"></a></td>
+<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”String[]” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
+<td>自定义数组</td>
+</tr>
+<tr>
+<td>List</td>
+<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”List” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
+<td>有序的列表</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
+<td>key:value集合。key不可重复。如果不设置默认值,则在Javascript中默认设为null。如果想设置空值,可写为：default&#x3D;”{}”</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
+<td>集合,无序,不含重复元素。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Apex Class类型<br> 该类型属性对应一个Apex类。type类型大小写不敏感,例如这里可以写成demoauracontroller。<br> 存在某个自定义Apex类：DemoAuraController.cls<!--存在名为：DemoAuraController.cls的Apex类-->
+&lt;aura:attribute name&#x3D;”data” type&#x3D;”DemoAuraController” &#x2F;&gt;</li>
+</ul>
+<p> Aura.Component、Aura.Component[]指定框架类型固有型。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Aura.Component</td>
+<td>N&#x2F;A</td>
+<td>一个单独的组件。相比较而言,官方推荐使用Aura:component[]类型。</td>
+</tr>
+<tr>
+<td>Aura.Component[]</td>
+<td>&lt;aura:attribute name&#x3D;”detail” type&#x3D;”Aura.Component[]”&gt;</td>
+<td>利用该类型可以设置一个类型块。</td>
+</tr>
+<tr>
+<td>Aura.Action</td>
+<td>&lt;aura：attribute name &#x3D;“ onclick” type &#x3D;“ Aura.Action” &#x2F;&gt;</td>
+<td>使用此类型,可以将action传递给组件。</td>
+</tr>
+</tbody></table>
+<h2 id="从静态资源或者label中引入默认值"><a href="#从静态资源或者label中引入默认值" class="headerlink" title="从静态资源或者label中引入默认值"></a>从静态资源或者label中引入默认值</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">implements</span>=<span class="string">&quot;flexipage:AvailableForAllPageTypes&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;profileImage&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Resource.profileImage&#125;&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;categoryName&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Label.c.categoryName&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- Stand-alone static resources image file--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;!v.profileImage&#125;&quot;</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- custom label --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        &#123;!v.categoryName&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="Global-ID"><a href="#Global-ID" class="headerlink" title="Global ID"></a>Global ID</h2><p>Global ID是组件实例化时为组件生成的唯一Id。在组件实例化时生成意味着global Id是动态的Id,所以在每一次调用组件时获得的global Id都是不同的。global Id可以用来区分组件元素的多个实例或者用于debugging操作。</p>
-<p><img src="/2022/02/26/Salesforce_AuraComponentId/Aura_GlobalId.PNG" alt="Aura_GlobalId.PNG"></p>
-<p>可以使用global Id作为元素的前缀或后缀为HTML元素创建唯一的ID。</p>
-<p>例如  </p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;&#123;!globalId + &#x27;_footer&#x27;&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="在js中处理Attribute"><a href="#在js中处理Attribute" class="headerlink" title="在js中处理Attribute"></a>在js中处理Attribute</h2><ol>
+<li>component.get(String key): 通过attribute name,来获取 attribute中存放的值。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">component.get(<span class="string">&quot;v.myAttribute&quot;</span>); <span class="comment">// 获取组件中attribute名为myAttribute的值；</span></span><br></pre></td></tr></table></figure>
 
-<p>使用getGlobalId()方法在JavaScript中获取组件元素的GlobalId。</p>
-<blockquote>
-<p>var globalId &#x3D; cmp.getGlobalId();</p>
-</blockquote>
-<p>如果要根据元素的global Id去获取元素, 需要使用全局对象$A</p>
-<blockquote>
-<p>var cmp &#x3D; $A.getComponent(globalId)</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Retrieve Global Id from JavaScript:</span></span><br><span class="line">component.getGlobalId()</span><br><span class="line">component.find(“buttonId”).getGlobalId()</span><br><span class="line">event.getSource().getGlobalId() </span><br></pre></td></tr></table></figure>
+<p>2.component.set(String key, Object value):通过attribute name,为 attribute分配新值。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">component.set(<span class="string">&quot;v.myAttribute&quot;</span>, <span class="string">&#x27;This is a New Value&#x27;</span>); <span class="comment">// 为myAttribute属性分配新值</span></span><br></pre></td></tr></table></figure>
+
+<p>对于复杂类型的attribute,比如集合类型(如Map)或者Object。也可以直接修改对象的内部属性。例如，这段代码在user属性中为firstName属性设置一个新值。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Map&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">default</span>=<span class="string">&quot;&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;id&#x27;: 99,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;firstName&#x27;: &#x27;Eunice&#x27;,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;lastName&#x27;: &#x27;Gomez&#x27;&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>First Name: &#123;!v.user.firstName&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.deepSet&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Deep Set&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>onclick方法执行时,在controller.js中调用deepSet方法为user属性设置新值。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">deepSet</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">        component.set(<span class="string">&quot;v.user.firstName&quot;</span>, <span class="string">&quot;Nina&quot;</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>Salesforce</category>
@@ -739,6 +739,7 @@
       </categories>
       <tags>
         <tag>Salesforce</tag>
+        <tag>Lightning</tag>
         <tag>Salesforce前端框架</tag>
       </tags>
   </entry>
@@ -884,6 +885,7 @@
       </categories>
       <tags>
         <tag>Salesforce</tag>
+        <tag>Lightning</tag>
         <tag>Salesforce前端框架</tag>
       </tags>
   </entry>
