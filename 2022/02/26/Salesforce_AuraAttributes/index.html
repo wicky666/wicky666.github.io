@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aura组件属性 | 云中漫步</title><meta name="keywords" content="Salesforce,Lightning,Aura基础"><meta name="author" content="Wick Wang"><meta name="copyright" content="Wick Wang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="介绍Aura的组件属性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Aura组件属性">
+<meta property="og:url" content="https://wicky666.github.io/2022/02/26/Salesforce_AuraAttributes/index.html">
+<meta property="og:site_name" content="云中漫步">
+<meta property="og:description" content="介绍Aura的组件属性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wicky666.github.io/img/SFDC_Fujishan.jpg">
+<meta property="article:published_time" content="2022-02-26T12:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-27T15:26:30.071Z">
+<meta property="article:author" content="Wick Wang">
+<meta property="article:tag" content="Salesforce">
+<meta property="article:tag" content="Lightning">
+<meta property="article:tag" content="Aura基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wicky666.github.io/img/SFDC_Fujishan.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://wicky666.github.io/2022/02/26/Salesforce_AuraAttributes/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fb818fe9c8e5ef98d528d61e948b872e";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":false,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Aura组件属性',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-27 23:26:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">#toggle-sidebar {bottom: 80px}</style><style type="text/css">#toggle-sidebar {left:100px}</style><meta name="generator" content="Hexo 5.4.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/./img/avatar_programmer.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/./img/SFDC_Fujishan.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">云中漫步</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Aura组件属性</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-02-27T15:26:30.071Z" title="更新于 2022-02-27 23:26:30">2022-02-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/">Salesforce</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/Salesforce-Aura/">Salesforce Aura</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Aura组件属性"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Aura的组件属性"><a href="#Aura的组件属性" class="headerlink" title="Aura的组件属性"></a>Aura的组件属性</h1><h2 id="如何理解组件的attribute"><a href="#如何理解组件的attribute" class="headerlink" title="如何理解组件的attribute?"></a>如何理解组件的attribute?</h2><p>在前端组件化开发中,都会引入state的概念。我们要把组件看成一个状态机。通过与用户的交互,实现不同状态,然后渲染UI,让用户界面和数据保持一致。  </p>
+<p>在Lightning Aura组件中, 我们通过改变组件的attribute来改变组件的状态。Aura的组件属性类似与Apex中类的成员变量,你可以在整个组件中显示、操作这些变量,从而改变组件的state,然后UI重新渲染,使画面上显示的数据和aura attribute的值保持一致。</p>
+<p>如此看来,aura attribute实际上有两个主要目的:</p>
+<ul>
+<li><p>存储交互的数据</p>
+</li>
+<li><p>组件之间交换数据。</p>
+</li>
+</ul>
+<h2 id="重置组件的attribute？"><a href="#重置组件的attribute？" class="headerlink" title="重置组件的attribute？"></a>重置组件的attribute？</h2><p>当画面刷新后,组件的state就会被浏览器释放掉。因为我们的组件属性都是存储在浏览器内存中的,所以一旦刷新页面,attribute也会回到初始状态。</p>
+<h2 id="为组件定义attribute"><a href="#为组件定义attribute" class="headerlink" title="为组件定义attribute"></a>为组件定义attribute</h2><p>语法：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;**&quot;</span> <span class="attr">type</span>=<span class="string">&quot;**&quot;</span> <span class="attr">default</span>=<span class="string">&quot;**&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true/false&quot;</span> <span class="attr">access</span>=<span class="string">&quot;**&quot;</span> <span class="attr">description</span>=<span class="string">&quot;**&quot;</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>name：必要字段,属性的名称<br>type：必要字段,属性的类型,支持的类型见下面的“属性type支持的类型”<br>default：非必要字段,默认值类型与type一致。<br>required：非必要字段,标记该属性是否为必须字段。true：表该字段为必要字段；false：表该字段为非必要字段。<br>access: 非必要字段,表该属性是否可被所属命名空间之外使用。public(默认)：所有命名空间皆可用；global：应用内可使用；private: 组件内可使用。<br>description: 非必要字段,对该属性进行简单的描述。</p>
+<p>例:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;strAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;intAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button&quot;</span> <span class="attr">press</span>=<span class="string">&quot;&#123;!c.increment&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;&#123;!v.intAttribute ? v.intAttribute : 0&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">increment</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt, helper</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> prev = cmp.get(<span class="string">&quot;v.intAttribute&quot;</span>);</span><br><span class="line">        cmp.set(<span class="string">&quot;v.intAttribute&quot;</span>, prev ? prev + <span class="number">1</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>看上面的例子,<br>所有attribute标签都有一个name和type属性,还可以通过指定required属性指定attribute是否为必需的,也可以为attribute指定一个默认值。<br>你可以使用{!expression}语法。例如{!v.intAttribute}允许你访问intAttribute属性。<br>当按下button后会执行increment方法,然后通过cmp.get(“xxx”)方法获取画面中intAttribute属性的值,通过cmp.set(‘xxx’)方法为attribute重新赋值后,画面的UI部分也会随之更新。</p>
+<h2 id="Attribute的命名规则"><a href="#Attribute的命名规则" class="headerlink" title="Attribute的命名规则"></a>Attribute的命名规则</h2><ul>
+<li>必须以字母或者下划线开头</li>
+<li>必须只包含字母、数字或下划线</li>
+</ul>
+<h2 id="Attribute的类型"><a href="#Attribute的类型" class="headerlink" title="Attribute的类型"></a>Attribute的类型</h2><p>aura组件支持不同类型的属性,如Boolean、Integer、String、Number 等,以及复杂的Object类型和更加复杂的functions和Facets类型。</p>
+<ul>
+<li>基础类型：Boolean、Date、DateTime、Decimal、Double、Integer、Long、String 等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>attribute类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Boolean</td>
+<td>&lt;aura:attribute name&#x3D;”typeBoolean” type&#x3D;”Boolean” default&#x3D;”false”&#x2F;&gt;</td>
+<td>有效值为true或false。若要设置默认值true,请添加default&#x3D;”true”。</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>&lt;aura:attribute name&#x3D;”typeDate” type&#x3D;”Date” default&#x3D;”2013-03-06T10:17:36.789Z”&#x2F;&gt;</td>
+<td>日期类型,格式为：yyyy-mm-dd。hh:mm:ss没有保存,要包含时间字段,请使用DateTime类型</td>
+</tr>
+<tr>
+<td>DateTime</td>
+<td>&lt;aura:attribute name&#x3D;”typeDateTime” type&#x3D;”DateTime”  default&#x3D;”123456789” &#x2F;&gt;</td>
+<td>日期类型,对应时间戳格式。保存了除了日期,还保存了时间,并且精确到毫秒。</td>
+</tr>
+<tr>
+<td>Decimal</td>
+<td>&lt;aura:attribute name&#x3D;”typeDecimal” type&#x3D;”Decimal” default&#x3D;”122.62” &#x2F;&gt;</td>
+<td>十进制,可以包括小数部分。对应Java.math.BigDecimal,精度高于Double类型。针对货币字段,一般选择该类型。</td>
+</tr>
+<tr>
+<td>Double</td>
+<td>&lt;aura:attribute name&#x3D;”typeDouble” type&#x3D;”Double” default&#x3D;”12.1”&#x2F;&gt;</td>
+<td>Double类型,可以包含小数位。对应Java.lang.Double。</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td>&lt;aura:attribute name&#x3D;”typeInteger” type&#x3D;”Integer” default&#x3D;”1”&#x2F;&gt;</td>
+<td>整数类型,不包含小数位。对应Java.lang.Integer。</td>
+</tr>
+<tr>
+<td>Long</td>
+<td>&lt;aura:attribute name&#x3D;”typeLong” type&#x3D;”Long”  default&#x3D;”123”&#x2F;&gt;</td>
+<td>长整型,不包含小数位。对应Java.lang.Long。</td>
+</tr>
+<tr>
+<td>String</td>
+<td>&lt;aura:attribute name&#x3D;”typeString” type&#x3D;”String” default&#x3D;”welcome to salesforce”&#x2F;&gt;</td>
+<td>字符串类型。</td>
+</tr>
+</tbody></table>
+<p>可以使用数组来保存一组基础类型的多个值：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;favoriteColors&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String[]&quot;</span> <span class="attr">default</span>=<span class="string">&quot;[&#x27;red&#x27;,&#x27;green&#x27;,&#x27;blue&#x27;]&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>函数类型<br> 属性的类型是Javascript中的某个函数。如果子组件具有该类型的属性，可传递回调函数给父组件。</p>
+<p> &lt;aura:attribute name&#x3D;”callback” type&#x3D;”Function” &#x2F;&gt;<br> 注意：该类型不适用于服务端,仅在客户端使用。</p>
+</li>
+<li><p>对象类型<br>属性是一个Object。<br>&lt;aura:attribute name&#x3D;”data” type&#x3D;”Object” &#x2F;&gt;<br>注意：一般情况下,不建议使用该类型。object类型的属性在传递至服务端时,会将所有的东西序列化为字符串,此时如果使用深度表达（例如：v.data.property）,则会抛出字符串没有该属性的异常。因此,尽量使用type&#x3D;”Map”,防止出现反序列化等问题。</p>
+</li>
+<li><p>标准或自定义对象类型<br>属性支持标准或自定义对象的类型。注意：用户至少对该对象具有读取权限,否则组件虽然不会报错,但是页面不会加载。</p>
+<!--标准对象-->
+<p>&lt;aura:attribute name&#x3D;”account” type&#x3D;”Account” &#x2F;&gt;</p>
+<!--自定义对象-->
+<p>&lt;aura:attribute name&#x3D;”employee” type&#x3D;”Employee__c” &#x2F;&gt;</p>
+</li>
+<li><p>集合类型</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type<a href="Array"></a></td>
+<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”String[]” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
+<td>自定义数组</td>
+</tr>
+<tr>
+<td>List</td>
+<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”List” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
+<td>有序的列表</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
+<td>key:value集合。key不可重复。如果不设置默认值,则在Javascript中默认设为null。如果想设置空值,可写为：default&#x3D;”{}”</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
+<td>集合,无序,不含重复元素。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Apex Class类型<br> 该类型属性对应一个Apex类。type类型大小写不敏感,例如这里可以写成demoauracontroller。<br> 存在某个自定义Apex类：DemoAuraController.cls<!--存在名为：DemoAuraController.cls的Apex类-->
+&lt;aura:attribute name&#x3D;”data” type&#x3D;”DemoAuraController” &#x2F;&gt;</li>
+</ul>
+<p> Aura.Component、Aura.Component[]指定框架类型固有型。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Aura.Component</td>
+<td>N&#x2F;A</td>
+<td>一个单独的组件。相比较而言,官方推荐使用Aura:component[]类型。</td>
+</tr>
+<tr>
+<td>Aura.Component[]</td>
+<td>&lt;aura:attribute name&#x3D;”detail” type&#x3D;”Aura.Component[]”&gt;</td>
+<td>利用该类型可以设置一个类型块。</td>
+</tr>
+<tr>
+<td>Aura.Action</td>
+<td>&lt;aura：attribute name &#x3D;“ onclick” type &#x3D;“ Aura.Action” &#x2F;&gt;</td>
+<td>使用此类型,可以将action传递给组件。</td>
+</tr>
+</tbody></table>
+<h2 id="从静态资源或者label中引入默认值"><a href="#从静态资源或者label中引入默认值" class="headerlink" title="从静态资源或者label中引入默认值"></a>从静态资源或者label中引入默认值</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">implements</span>=<span class="string">&quot;flexipage:AvailableForAllPageTypes&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;profileImage&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Resource.profileImage&#125;&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;categoryName&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Label.c.categoryName&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- Stand-alone static resources image file--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;!v.profileImage&#125;&quot;</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- custom label --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        &#123;!v.categoryName&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="在js中处理Attribute"><a href="#在js中处理Attribute" class="headerlink" title="在js中处理Attribute"></a>在js中处理Attribute</h2><ol>
+<li>component.get(String key): 通过attribute name,来获取 attribute中存放的值。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">component.get(<span class="string">&quot;v.myAttribute&quot;</span>); <span class="comment">// 获取组件中attribute名为myAttribute的值；</span></span><br></pre></td></tr></table></figure>
+
+<p>2.component.set(String key, Object value):通过attribute name,为 attribute分配新值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">component.set(<span class="string">&quot;v.myAttribute&quot;</span>, <span class="string">&#x27;This is a New Value&#x27;</span>); <span class="comment">// 为myAttribute属性分配新值</span></span><br></pre></td></tr></table></figure>
+
+<p>对于复杂类型的attribute,比如集合类型(如Map)或者Object。也可以直接修改对象的内部属性。例如，这段代码在user属性中为firstName属性设置一个新值。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Map&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">default</span>=<span class="string">&quot;&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;id&#x27;: 99,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;firstName&#x27;: &#x27;Eunice&#x27;,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;lastName&#x27;: &#x27;Gomez&#x27;&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>First Name: &#123;!v.user.firstName&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.deepSet&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Deep Set&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>onclick方法执行时,在controller.js中调用deepSet方法为user属性设置新值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">deepSet</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">        component.set(<span class="string">&quot;v.user.firstName&quot;</span>, <span class="string">&quot;Nina&quot;</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Wick Wang</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wicky666.github.io/2022/02/26/Salesforce_AuraAttributes/">https://wicky666.github.io/2022/02/26/Salesforce_AuraAttributes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wicky666.github.io" target="_blank">云中漫步</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Salesforce/">Salesforce</a><a class="post-meta__tags" href="/tags/Lightning/">Lightning</a><a class="post-meta__tags" href="/tags/Aura%E5%9F%BA%E7%A1%80/">Aura基础</a></div><div class="post_share"><div class="social-share" data-image="/./img/SFDC_Fujishan.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/02/26/Salesforce_AuraComponentId/"><img class="next-cover" src="/./img/SFDC_Fujishan.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Aura组件ID</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-13</div><div class="title">Aura组件结构</div></div></a></div><div><a href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">Aura组件ID</div></div></a></div><div><a href="/2021/12/02/Salesforce_FrontendFrameworks/" title="深入Salsforce前端框架(一)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-02</div><div class="title">深入Salsforce前端框架(一)</div></div></a></div><div><a href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">深入Salsforce前端框架(二)</div></div></a></div><div><a href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-25</div><div class="title">深入Salsforce前端框架(三)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/./img/avatar_programmer.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wick Wang</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wicky666"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wicky666" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/wicky_wang@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">网站功能持续更新中...</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Aura%E7%9A%84%E7%BB%84%E4%BB%B6%E5%B1%9E%E6%80%A7"><span class="toc-number">1.</span> <span class="toc-text">Aura的组件属性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3%E7%BB%84%E4%BB%B6%E7%9A%84attribute"><span class="toc-number">1.1.</span> <span class="toc-text">如何理解组件的attribute?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%BD%AE%E7%BB%84%E4%BB%B6%E7%9A%84attribute%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">重置组件的attribute？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E7%BB%84%E4%BB%B6%E5%AE%9A%E4%B9%89attribute"><span class="toc-number">1.3.</span> <span class="toc-text">为组件定义attribute</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attribute%E7%9A%84%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="toc-number">1.4.</span> <span class="toc-text">Attribute的命名规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attribute%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.5.</span> <span class="toc-text">Attribute的类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%88%96%E8%80%85label%E4%B8%AD%E5%BC%95%E5%85%A5%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="toc-number">1.6.</span> <span class="toc-text">从静态资源或者label中引入默认值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8js%E4%B8%AD%E5%A4%84%E7%90%86Attribute"><span class="toc-number">1.7.</span> <span class="toc-text">在js中处理Attribute</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件属性"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性">Aura组件属性</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件ID"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID">Aura组件ID</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件结构"/></a><div class="content"><a class="title" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构">Aura组件结构</a><time datetime="2022-01-13T02:00:00.000Z" title="发表于 2022-01-13 10:00:00">2022-01-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深入Salsforce前端框架(三)"/></a><div class="content"><a class="title" href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)">深入Salsforce前端框架(三)</a><time datetime="2021-12-25T15:04:33.000Z" title="发表于 2021-12-25 23:04:33">2021-12-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img src="/../img/salesforce_article.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深入Salsforce前端框架(二)"/></a><div class="content"><a class="title" href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)">深入Salsforce前端框架(二)</a><time datetime="2021-12-20T12:17:33.000Z" title="发表于 2021-12-20 20:17:33">2021-12-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wick Wang</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="6616884206" data-server="netease" data-type="playlist" data-theme="#FF4081" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="auto" data-autoplay="true" muted></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

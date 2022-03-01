@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Aura组件属性</title>
+    <url>/2022/02/26/Salesforce_AuraAttributes/</url>
+    <content><![CDATA[<h1 id="Aura的组件属性"><a href="#Aura的组件属性" class="headerlink" title="Aura的组件属性"></a>Aura的组件属性</h1><h2 id="如何理解组件的attribute"><a href="#如何理解组件的attribute" class="headerlink" title="如何理解组件的attribute?"></a>如何理解组件的attribute?</h2><p>在前端组件化开发中,都会引入state的概念。我们要把组件看成一个状态机。通过与用户的交互,实现不同状态,然后渲染UI,让用户界面和数据保持一致。  </p>
+<p>在Lightning Aura组件中, 我们通过改变组件的attribute来改变组件的状态。Aura的组件属性类似与Apex中类的成员变量,你可以在整个组件中显示、操作这些变量,从而改变组件的state,然后UI重新渲染,使画面上显示的数据和aura attribute的值保持一致。</p>
+<p>如此看来,aura attribute实际上有两个主要目的:</p>
+<ul>
+<li><p>存储交互的数据</p>
+</li>
+<li><p>组件之间交换数据。</p>
+</li>
+</ul>
+<h2 id="重置组件的attribute？"><a href="#重置组件的attribute？" class="headerlink" title="重置组件的attribute？"></a>重置组件的attribute？</h2><p>当画面刷新后,组件的state就会被浏览器释放掉。因为我们的组件属性都是存储在浏览器内存中的,所以一旦刷新页面,attribute也会回到初始状态。</p>
+<h2 id="为组件定义attribute"><a href="#为组件定义attribute" class="headerlink" title="为组件定义attribute"></a>为组件定义attribute</h2><p>语法：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;**&quot;</span> <span class="attr">type</span>=<span class="string">&quot;**&quot;</span> <span class="attr">default</span>=<span class="string">&quot;**&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true/false&quot;</span> <span class="attr">access</span>=<span class="string">&quot;**&quot;</span> <span class="attr">description</span>=<span class="string">&quot;**&quot;</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>name：必要字段,属性的名称<br>type：必要字段,属性的类型,支持的类型见下面的“属性type支持的类型”<br>default：非必要字段,默认值类型与type一致。<br>required：非必要字段,标记该属性是否为必须字段。true：表该字段为必要字段；false：表该字段为非必要字段。<br>access: 非必要字段,表该属性是否可被所属命名空间之外使用。public(默认)：所有命名空间皆可用；global：应用内可使用；private: 组件内可使用。<br>description: 非必要字段,对该属性进行简单的描述。</p>
+<p>例:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;strAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;intAttribute&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Integer&quot;</span> <span class="attr">required</span>=<span class="string">&quot;true&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button&quot;</span> <span class="attr">press</span>=<span class="string">&quot;&#123;!c.increment&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;&#123;!v.intAttribute ? v.intAttribute : 0&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">increment</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt, helper</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> prev = cmp.get(<span class="string">&quot;v.intAttribute&quot;</span>);</span><br><span class="line">        cmp.set(<span class="string">&quot;v.intAttribute&quot;</span>, prev ? prev + <span class="number">1</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>看上面的例子,<br>所有attribute标签都有一个name和type属性,还可以通过指定required属性指定attribute是否为必需的,也可以为attribute指定一个默认值。<br>你可以使用{!expression}语法。例如{!v.intAttribute}允许你访问intAttribute属性。<br>当按下button后会执行increment方法,然后通过cmp.get(“xxx”)方法获取画面中intAttribute属性的值,通过cmp.set(‘xxx’)方法为attribute重新赋值后,画面的UI部分也会随之更新。</p>
+<h2 id="Attribute的命名规则"><a href="#Attribute的命名规则" class="headerlink" title="Attribute的命名规则"></a>Attribute的命名规则</h2><ul>
+<li>必须以字母或者下划线开头</li>
+<li>必须只包含字母、数字或下划线</li>
+</ul>
+<h2 id="Attribute的类型"><a href="#Attribute的类型" class="headerlink" title="Attribute的类型"></a>Attribute的类型</h2><p>aura组件支持不同类型的属性,如Boolean、Integer、String、Number 等,以及复杂的Object类型和更加复杂的functions和Facets类型。</p>
+<ul>
+<li>基础类型：Boolean、Date、DateTime、Decimal、Double、Integer、Long、String 等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>attribute类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Boolean</td>
+<td>&lt;aura:attribute name&#x3D;”typeBoolean” type&#x3D;”Boolean” default&#x3D;”false”&#x2F;&gt;</td>
+<td>有效值为true或false。若要设置默认值true,请添加default&#x3D;”true”。</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>&lt;aura:attribute name&#x3D;”typeDate” type&#x3D;”Date” default&#x3D;”2013-03-06T10:17:36.789Z”&#x2F;&gt;</td>
+<td>日期类型,格式为：yyyy-mm-dd。hh:mm:ss没有保存,要包含时间字段,请使用DateTime类型</td>
+</tr>
+<tr>
+<td>DateTime</td>
+<td>&lt;aura:attribute name&#x3D;”typeDateTime” type&#x3D;”DateTime”  default&#x3D;”123456789” &#x2F;&gt;</td>
+<td>日期类型,对应时间戳格式。保存了除了日期,还保存了时间,并且精确到毫秒。</td>
+</tr>
+<tr>
+<td>Decimal</td>
+<td>&lt;aura:attribute name&#x3D;”typeDecimal” type&#x3D;”Decimal” default&#x3D;”122.62” &#x2F;&gt;</td>
+<td>十进制,可以包括小数部分。对应Java.math.BigDecimal,精度高于Double类型。针对货币字段,一般选择该类型。</td>
+</tr>
+<tr>
+<td>Double</td>
+<td>&lt;aura:attribute name&#x3D;”typeDouble” type&#x3D;”Double” default&#x3D;”12.1”&#x2F;&gt;</td>
+<td>Double类型,可以包含小数位。对应Java.lang.Double。</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td>&lt;aura:attribute name&#x3D;”typeInteger” type&#x3D;”Integer” default&#x3D;”1”&#x2F;&gt;</td>
+<td>整数类型,不包含小数位。对应Java.lang.Integer。</td>
+</tr>
+<tr>
+<td>Long</td>
+<td>&lt;aura:attribute name&#x3D;”typeLong” type&#x3D;”Long”  default&#x3D;”123”&#x2F;&gt;</td>
+<td>长整型,不包含小数位。对应Java.lang.Long。</td>
+</tr>
+<tr>
+<td>String</td>
+<td>&lt;aura:attribute name&#x3D;”typeString” type&#x3D;”String” default&#x3D;”welcome to salesforce”&#x2F;&gt;</td>
+<td>字符串类型。</td>
+</tr>
+</tbody></table>
+<p>可以使用数组来保存一组基础类型的多个值：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;favoriteColors&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String[]&quot;</span> <span class="attr">default</span>=<span class="string">&quot;[&#x27;red&#x27;,&#x27;green&#x27;,&#x27;blue&#x27;]&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>函数类型<br> 属性的类型是Javascript中的某个函数。如果子组件具有该类型的属性，可传递回调函数给父组件。</p>
+<p> &lt;aura:attribute name&#x3D;”callback” type&#x3D;”Function” &#x2F;&gt;<br> 注意：该类型不适用于服务端,仅在客户端使用。</p>
+</li>
+<li><p>对象类型<br>属性是一个Object。<br>&lt;aura:attribute name&#x3D;”data” type&#x3D;”Object” &#x2F;&gt;<br>注意：一般情况下,不建议使用该类型。object类型的属性在传递至服务端时,会将所有的东西序列化为字符串,此时如果使用深度表达（例如：v.data.property）,则会抛出字符串没有该属性的异常。因此,尽量使用type&#x3D;”Map”,防止出现反序列化等问题。</p>
+</li>
+<li><p>标准或自定义对象类型<br>属性支持标准或自定义对象的类型。注意：用户至少对该对象具有读取权限,否则组件虽然不会报错,但是页面不会加载。</p>
+<!--标准对象-->
+<p>&lt;aura:attribute name&#x3D;”account” type&#x3D;”Account” &#x2F;&gt;</p>
+<!--自定义对象-->
+<p>&lt;aura:attribute name&#x3D;”employee” type&#x3D;”Employee__c” &#x2F;&gt;</p>
+</li>
+<li><p>集合类型</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type<a href="Array"></a></td>
+<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”String[]” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
+<td>自定义数组</td>
+</tr>
+<tr>
+<td>List</td>
+<td>&lt;aura:attribute name&#x3D;”colorPalette” type&#x3D;”List” default&#x3D;”[‘red’, ‘green’, ‘blue’]” &#x2F;&gt;</td>
+<td>有序的列表</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
+<td>key:value集合。key不可重复。如果不设置默认值,则在Javascript中默认设为null。如果想设置空值,可写为：default&#x3D;”{}”</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>&lt;aura:attribute name&#x3D;”sectionLabels” type&#x3D;”Map” default&#x3D;”{ a: ‘label1’, b: ‘label2’ }” &#x2F;&gt;</td>
+<td>集合,无序,不含重复元素。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Apex Class类型<br> 该类型属性对应一个Apex类。type类型大小写不敏感,例如这里可以写成demoauracontroller。<br> 存在某个自定义Apex类：DemoAuraController.cls<!--存在名为：DemoAuraController.cls的Apex类-->
+&lt;aura:attribute name&#x3D;”data” type&#x3D;”DemoAuraController” &#x2F;&gt;</li>
+</ul>
+<p> Aura.Component、Aura.Component[]指定框架类型固有型。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>声明方式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Aura.Component</td>
+<td>N&#x2F;A</td>
+<td>一个单独的组件。相比较而言,官方推荐使用Aura:component[]类型。</td>
+</tr>
+<tr>
+<td>Aura.Component[]</td>
+<td>&lt;aura:attribute name&#x3D;”detail” type&#x3D;”Aura.Component[]”&gt;</td>
+<td>利用该类型可以设置一个类型块。</td>
+</tr>
+<tr>
+<td>Aura.Action</td>
+<td>&lt;aura：attribute name &#x3D;“ onclick” type &#x3D;“ Aura.Action” &#x2F;&gt;</td>
+<td>使用此类型,可以将action传递给组件。</td>
+</tr>
+</tbody></table>
+<h2 id="从静态资源或者label中引入默认值"><a href="#从静态资源或者label中引入默认值" class="headerlink" title="从静态资源或者label中引入默认值"></a>从静态资源或者label中引入默认值</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">implements</span>=<span class="string">&quot;flexipage:AvailableForAllPageTypes&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;profileImage&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Resource.profileImage&#125;&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;categoryName&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&#123;!$Label.c.categoryName&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- Stand-alone static resources image file--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;&#123;!v.profileImage&#125;&quot;</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- custom label --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        &#123;!v.categoryName&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="在js中处理Attribute"><a href="#在js中处理Attribute" class="headerlink" title="在js中处理Attribute"></a>在js中处理Attribute</h2><ol>
+<li>component.get(String key): 通过attribute name,来获取 attribute中存放的值。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">component.get(<span class="string">&quot;v.myAttribute&quot;</span>); <span class="comment">// 获取组件中attribute名为myAttribute的值；</span></span><br></pre></td></tr></table></figure>
+
+<p>2.component.set(String key, Object value):通过attribute name,为 attribute分配新值。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">component.set(<span class="string">&quot;v.myAttribute&quot;</span>, <span class="string">&#x27;This is a New Value&#x27;</span>); <span class="comment">// 为myAttribute属性分配新值</span></span><br></pre></td></tr></table></figure>
+
+<p>对于复杂类型的attribute,比如集合类型(如Map)或者Object。也可以直接修改对象的内部属性。例如，这段代码在user属性中为firstName属性设置一个新值。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Map&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">default</span>=<span class="string">&quot;&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;id&#x27;: 99,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;firstName&#x27;: &#x27;Eunice&#x27;,</span></span></span><br><span class="line"><span class="string"><span class="tag">            &#x27;lastName&#x27;: &#x27;Gomez&#x27;&#125;&quot;</span> /&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>First Name: &#123;!v.user.firstName&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.deepSet&#125;&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Deep Set&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>onclick方法执行时,在controller.js中调用deepSet方法为user属性设置新值。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">deepSet</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">        component.set(<span class="string">&quot;v.user.firstName&quot;</span>, <span class="string">&quot;Nina&quot;</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(component.get(<span class="string">&quot;v.user.firstName&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce Aura</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Aura基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Aura组件结构</title>
+    <url>/2022/01/13/Salesforce_AuraBasic/</url>
+    <content><![CDATA[<p>在<a href="https://wicky666.github.io/2021/12/20/Salesforce_FrontendFrameworksII/">深入Salsforce前端框架(二)篇</a>中已经梳理了Aura框架的特性。此篇会着重讲解Aura组件的组件结构。</p>
+<h1 id="Aura-Components"><a href="#Aura-Components" class="headerlink" title="Aura Components"></a>Aura Components</h1><p>Aura Component是构成Lightning应用的基本单元,它可以是一个完整的应用或者只是一行文本,这取决于开发者如何更好的对页面进行合理的划分,并且提前规划好各个组件之间如何传递信息。组件最终会在浏览器中渲染生成<a href="https://www.w3school.com.cn/jsref/dom_obj_all.aspp">HTML DOM 元素</a>。</p>
+<p>Lighnting Componen也可以看成是CS架构,Aura Component是客户端负责画面的呈现和用户交互，组件绑定的Apex Controller作为服务端,负责与DB的交互。</p>
+<p><img src="/2022/01/13/Salesforce_AuraBasic/AuraBasic_0000.PNG" alt="AuraBasic_0000.png"></p>
+<h2 id="创建Aura组件"><a href="#创建Aura组件" class="headerlink" title="创建Aura组件"></a>创建Aura组件</h2><h3 id="开启My-Domain"><a href="#开启My-Domain" class="headerlink" title="开启My Domain"></a>开启My Domain</h3><p>在创建Lightning组件前,你的org必须启用<strong>My Domain</strong>。<br>出于安全考虑，Lightning Components要求为每一个org定义一个自定义的Salesforce域名。当启用My Domain后,链接到Lightning资源的格式会变为<a href="https://xxx.lightning.force.com/">https://xxx.lightning.force.com</a>。<br><img src="/2022/01/13/Salesforce_AuraBasic/AuraBasic_0001.PNG" alt="AuraBasic_0001.png"></p>
+<p>Lightning组件不能与供应商的Lightning组件共享相同的内存空间,在启用My Domain后org中的每个Lightning组件都会有一个’命名空间’。这可以使Salesforce区分出org中的组件和org中引入的第三方managed package中的组件代码。</p>
+<h3 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h3><ul>
+<li>如果org中还没有设置命名空间前缀,系统会为创建的组件分配默认的命名空间前缀 → <strong>c</strong>.<br>引用组件时写为:<blockquote>
+<p>&lt;c:myComponent &#x2F;&gt;</p>
+</blockquote>
+<p>如果org中已经设置了命名空间前缀,系统会使用你创建的命名空间前缀,引用组件时写:</p>
+<blockquote>
+<p>&lt;yournamespace:myComponent &#x2F;&gt;</p>
+</blockquote>
+</li>
+<li>按照下面的方式可以为你的org创建命名空间<blockquote>
+<p>Setup → Package Manager → Namespace Settings<br>设置好后需要点击Check Availability验证命名空间是否可用。</p>
+</blockquote>
+</li>
+<li>命名规则  <ul>
+<li>以字母开头</li>
+<li>长度为1 ~ 15个字母或者数字</li>
+<li>不能包含两个连续的下划线</li>
+</ul>
+</li>
+</ul>
+<h3 id="创建组件的方式"><a href="#创建组件的方式" class="headerlink" title="创建组件的方式"></a>创建组件的方式</h3><p>可以通过Developer Console或者利用VS Code的Salesforce Extension Pack + Salesforce CLI这两种方式去创建aura组件。<br>Vs code中创建aura组件需要提前安装Salesforce Extension Pack扩展包。具体的安装以及创建组件过程请参考<a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_create_cli.htm">创建Aura组件</a>。</p>
+<h3 id="Aura-Component-Bundle"><a href="#Aura-Component-Bundle" class="headerlink" title="Aura Component Bundle"></a>Aura Component Bundle</h3><p>当Aura组件创建完成后,会生成下边的组件包。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">=== Deployed Source</span><br><span class="line">FULL NAME                             TYPE                  PROJECT PATH</span><br><span class="line">────────────────────────────────────  ────────────────────  ────────────────────────────────────────────────────────────────</span><br><span class="line">myComponent/myComponent.auradoc       AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponent.auradoc</span><br><span class="line">myComponent/myComponent.cmp           AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponent.cmp</span><br><span class="line">myComponent/myComponent.cmp           AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponent.cmp-meta.xml</span><br><span class="line">myComponent/myComponent.css           AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponent.css</span><br><span class="line">myComponent/myComponent.design        AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponent.design</span><br><span class="line">myComponent/myComponent.svg           AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponent.svg</span><br><span class="line">myComponent/myComponentController.js  AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponentController.js</span><br><span class="line">myComponent/myComponentHelper.js      AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponentHelper.js</span><br><span class="line">myComponent/myComponentRenderer.js    AuraDefinitionBundle  force-app/main/default/aura/myComponent/myComponentRenderer.js</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>组件包中包含了Aura组件中用到的所有资源,各个资源在组件中各司其职，扮演着不同的角色。开发者需要明确各个资源的作用与使用方式。<br>组件中包含以下部分:</p>
+<ul>
+<li>Component</li>
+<li>Controller</li>
+<li>Helper</li>
+<li>Style</li>
+<li>Documentation</li>
+<li>Renderer</li>
+<li>Design</li>
+<li>SVG</li>
+</ul>
+<p><img src="/2022/01/13/Salesforce_AuraBasic/AuraBasic_0002.PNG" alt="AuraBasic_0002.png"></p>
+<table>
+<thead>
+<tr>
+<th>资源类型</th>
+<th>资源名</th>
+<th>用途</th>
+<th>是否必需</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Component or Application</td>
+<td>sample.cmp or sample.app</td>
+<td>在捆绑包中唯一的必要资源，包含了组件的标记，并且每个捆绑包中只有一个component</td>
+<td>○</td>
+</tr>
+<tr>
+<td>Controller</td>
+<td>sampleController.js</td>
+<td>包含用于处理组件中的事件的客户端控制器方法。</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>Helper</td>
+<td>sampleHelper.js</td>
+<td>可以从组件包中的任何JavaScript代码中调用的JavaScript函数</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>CSS Styles</td>
+<td>sample.css</td>
+<td>指定组件的样式。</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>sample.auradoc</td>
+<td>组件的简单介绍说明，可以是一个描述、示例代码</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>Renderer</td>
+<td>sampleRenderer.js</td>
+<td>客户端渲染器会覆盖默认的渲染器</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>Design</td>
+<td>sample.design</td>
+<td>Lightning App Builder、Lightning页面、Experience Builder或Flow Builder中使用时需要用到</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>SVG File</td>
+<td>sample.svg</td>
+<td>组件的自定义图标资源，一般为Lightning App Builder中使用的图标</td>
+<td>✖</td>
+</tr>
+</tbody></table>
+<h4 id="Aura-Application"><a href="#Aura-Application" class="headerlink" title="Aura Application"></a>Aura Application</h4><p>Aura application是组件的父容器，生成的应用可以直接在Developer console中预览。<br><img src="/2022/01/13/Salesforce_AuraBasic/AuraBasic_0003.PNG" alt="AuraBasic_0003.png"></p>
+<h4 id="Component"><a href="#Component" class="headerlink" title="Component"></a>Component</h4><p>Component资源负责Aura组件的UI界面,文件后缀是.cmp。组件生成后,会自动生成一个<a href="aura:component">aura:component</a>标签，这也是整个组件的根节点。<br><a href="aura:component">aura:component</a>中内支持大部分HTML标签，比如<div> 和 <span>. 也支持HTML5 标签。<br>当然也可以使用Salesforce提供的<a href="https://developer.salesforce.com/docs/component-library/overview/components">组件标签</a>，比如lightning:button，lightning:accordionSection等。这些组件标签已经封装了slds样式，可以帮助我们更快的构建响应式的UI界面。</span></div></p>
+<p>开发aura画面时，下面的几点需要注意：</p>
+<ul>
+<li>尽量利用salesforce封装好的标签,比如使用lightning:button代替html button标签。因为这些开箱即用的组件不仅简化了大量的js处理,而且更加安全，并对性能进行了优化。</li>
+<li>遵循XHTML语法规范,代码每个标签都需要闭合,比如使用<br>而不是<br>.</li>
+<li>在写超链接标签时, 不要直接使用a标签的href属性去链接Salesforce URL。尽量使用force:navigateToSObject或者force:navigateToURL事件去实现salesforce内部的跳转。</li>
+<li>如果使用组件库中的组件无法实现需求,利用html原生标签去开发尽量使用SLDS样式库的属性去加载Css,而不是自己写行内CSS,这是很不好的习惯。</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    // User Interface Code Here.</span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h4><p>和vf不一样,在cmp内无法写任何的js代码,Controller.js专门负责响应客户端的各种事件，比如画面的初期数据加载，用户与画面交互时发生的事件。它的构造其实非常简单，只要关注事件处理函数就好，不用担心变量的作用域。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">myAction</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// add code for the action</span></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">anotherAction</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// add code for the action</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在定义函数时,接收3个默认参数:  </p>
+<h5 id="cmp"><a href="#cmp" class="headerlink" title="cmp"></a>cmp</h5><p>通过cmp可以取得当前操作action所在的component信息。无论你想取得画面中的元素或者更新画面，肯定需要用到该参数。<br>controller或者helper中可以通过cmp.find(“name”)即可获取到 aura:id为name的元素（或者元素列表），如果不存在所要搜索的aura:id，则返回undefined.controller.js&#x2F;helper.js中针对一个元素获取它的local id，可以通过cmp.getLocalId()方法获得。</p>
+<p>常用方法:</p>
+<ul>
+<li>component.find()</li>
+<li>component.get()</li>
+<li>component.set()</li>
+</ul>
+<h5 id="event"><a href="#event" class="headerlink" title="event"></a>event</h5><p>当前操作的事件信息，比如可以通过event获取到当前被点击button的属性值，这个button就是产生事件的事件源。<br>我们需要明确画面中哪些Salesforce 标准标签，哪些是HTML原生的标签。使用不同的方法去获取event中的信息。</p>
+<ul>
+<li><p>Salesforce标准组件标签: 使用Salesforce中提供的方法去访问元素</p>
+<ul>
+<li>event.getSource()  &#x2F;&#x2F; 获取触发事件的元素</li>
+<li>event.getSource().get(“v.myName”) &#x2F;&#x2F; 获取触发事件元素的属性值</li>
+<li>event.getSource().getLocalId &#x2F;&#x2F; 获取触发事件元素的aura Id.</li>
+</ul>
+</li>
+<li><p>Salesforce标准组件标签: 使用html中提供的方法去访问元素</p>
+<ul>
+<li>event.target &#x2F;&#x2F; 获取引起触发事件的元素</li>
+<li>event.currentTarget &#x2F;&#x2F; 获取事件绑定的元素</li>
+<li>event.currentTarget.name &#x2F;&#x2F; 获取触发事件元素的name属性.</li>
+<li>event.currentTarget.className &#x2F;&#x2F; 获取触发事件元素的Class名.</li>
+</ul>
+</li>
+</ul>
+<p>在下面的例子中, Button A是Salesforce标准标签,Button B是HTML原生的button标签。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">implements</span>=<span class="string">&quot;force:appHostable&quot;</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">variant</span>=<span class="string">&quot;base&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Button A&quot;</span> <span class="attr">title</span>=<span class="string">&quot;Base action&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;! c.handleClickBtnA &#125;&quot;</span> <span class="attr">aura:id</span>=<span class="string">&quot;buttonA&quot;</span> <span class="attr">name</span>=<span class="string">&quot;Button A&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">&quot;slds-button slds-button_brand&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.handleClickBtnB&#125;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;buttonB&quot;</span> <span class="attr">name</span>=<span class="string">&quot;Button B&quot;</span>&gt;</span>Button B<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">handleClickBtnA</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.getSource()); <span class="comment">// SecureComponentRef: markup://lightning:button &#123;294:0&#125; &#123;buttonA&#125;&#123; key: &#123;&quot;namespace&quot;:&quot;c&quot;&#125; &#125;</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.getSource().get(<span class="string">&quot;v.name&quot;</span>)); <span class="comment">// Button A</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.getSource().get(<span class="string">&quot;v.label&quot;</span>)); <span class="comment">// Button A</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.getSource().getLocalId()); <span class="comment">// buttonA</span></span><br><span class="line">        <span class="comment">// BaseComponent无法通过HTML API获取元素的属性</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.target); <span class="comment">// SecureElement: [object HTMLDivElement]&#123; key: &#123;&quot;namespace&quot;:&quot;c&quot;&#125; &#125;</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.currentTarget); <span class="comment">// SecureObject: [object HTMLButtonElement]&#123; key: &#123;&quot;namespace&quot;:&quot;c&quot;&#125; &#125;</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnA:::::::::::::::::::&#x27;</span> + event.currentTarget.name); <span class="comment">// undefined</span></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">handleClickBtnB</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// event.target指向引起触发事件的元素</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnB:::::::::::::::::::&#x27;</span> + event.target); <span class="comment">// SecureElement: [object HTMLButtonElement]&#123; key: &#123;&quot;namespace&quot;:&quot;c&quot;&#125; &#125;</span></span><br><span class="line">        <span class="comment">// event.currentTarget则是事件绑定的元素,只有被点击的那个目标元素的event.target才会等于event.currentTarget。</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnB:::::::::::::::::::&#x27;</span> + event.currentTarget); <span class="comment">// SecureElement: [object HTMLButtonElement]&#123; key: &#123;&quot;namespace&quot;:&quot;c&quot;&#125; &#125;</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnB:::::::::::::::::::&#x27;</span> + event.target.name); <span class="comment">// Button B</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;handleClickBtnB:::::::::::::::::::&#x27;</span> + event.target.className); <span class="comment">// slds-button slds-button_brand</span></span><br><span class="line">        alert(<span class="string">&#x27;handleClickBtnB:::::::::&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/01/13/Salesforce_AuraBasic/AuraBasic_0004.PNG" alt="AuraBasic_0004.png">  </p>
+<p>通过上面的debug信息,可以看出对于Salesforce标准标签,需要使用event.getSource()方法才能访问触发事件元素的属性，Component Id.<br>对于 html原生标签，使用event.target来获取触发事件的元素。</p>
+<h5 id="helper"><a href="#helper" class="headerlink" title="helper"></a>helper</h5><p>如果需要调用helper.js中的方法需要传递该参数</p>
+<h4 id="helper-1"><a href="#helper-1" class="headerlink" title="helper"></a>helper</h4><p>lightning bundle中的helper.js和controller.js一样也是js资源。在helper.js中定义的方法和我们写普通的js方法没有任何区别,但是在helper.js中写的方法不会直接参与事件的处理,但可以在controller.js的方法中调用。</p>
+<p>使用要点：</p>
+<ul>
+<li><p>Helper不处理直接处理事件,所以想获取component, event参数，需要通过controller.js中的方法传参。</p>
+</li>
+<li><p>Helper可以用来编写可重用的Javascript方法，通过helper.helperMethod()在Controller中调用。</p>
+</li>
+<li><p>Helper中也可以处理数据,请求服务端数据。</p>
+</li>
+<li><p>可以使用<em>this.Method</em> 从一个helper方法去调用其他的helper方法。</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* controller */</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">controllerMethod1</span>: <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 从controller中调用helper中的helperMethod2方法</span></span><br><span class="line">        helper.helperMethod2(component);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* helper */</span></span><br><span class="line">(&#123;  <span class="comment">// 无参数的helper方法</span></span><br><span class="line">    <span class="attr">helperMethod1</span> : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 接受component参数的helper方法</span></span><br><span class="line">    <span class="attr">helperMethod2</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// helperMethod2中调用helperMethod3</span></span><br><span class="line">        <span class="built_in">this</span>.helperMethod3(var1, var2);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 接受任何参数的helper方法</span></span><br><span class="line">    <span class="attr">helperMethod3</span> : <span class="function"><span class="keyword">function</span>(<span class="params">var1, var2</span>) </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="Style"><a href="#Style" class="headerlink" title="Style"></a>Style</h4><p>组件的样式在lightning bundle中的componentName.css文件中定义。组件会为component中的根元素默认添加一个特殊的THIS CSS类,它会为CSS添加命名空间，并有防止一个组件的CSS覆盖另一个组件的样式。如果添加样式时缺少THIS. 保存文件会抛出错误。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--controlStyle.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;white&quot;</span>&gt;</span></span><br><span class="line">    Hello, HTML!</span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="name">h2</span>&gt;</span>Check out the style in this list.<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;red&quot;</span>&gt;</span>I&#x27;m red.<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;blue&quot;</span>&gt;</span>I&#x27;m blue.<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;green&quot;</span>&gt;</span>I&#x27;m green.<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">.THIS &#123;</span><br><span class="line">    background-color: grey;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.THIS.white &#123;</span><br><span class="line">    background-color: white;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.THIS .red &#123;</span><br><span class="line">    background-color: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.THIS .blue &#123;</span><br><span class="line">    background-color: blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.THIS .green &#123;</span><br><span class="line">    background-color: green;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/01/13/Salesforce_AuraBasic/AuraBasic_0005.PNG" alt="AuraBasic_0005.png">  </p>
+<h4 id="Documentation"><a href="#Documentation" class="headerlink" title="Documentation"></a>Documentation</h4><p>规范的组件文档说明可以帮助开发人员更高效的使用组件。你可以为组件、事件或接口提供交互式示例、文档和规范描述。</p>
+<p>每个组件、事件或接口都有一个根定义，用于定义元素的元数据，以及属性、事件或方法。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:documentation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:description</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Your content here --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aura:description</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:example</span> <span class="attr">name</span>=<span class="string">&quot;exampleAvatarBasic&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;lightningcomponentdemo:exampleAvatarBasic&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Basic Avatar&quot;</span>&gt;</span></span><br><span class="line">        The following example creates an avatar with the default size and variant.</span><br><span class="line">        The initials &quot;BW&quot; is displayed if the image path denoted by the src attribute</span><br><span class="line">        is invalid or fails to load for any reason, such as when the user is offline.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">aura:example</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:documentation</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Renderer"><a href="#Renderer" class="headerlink" title="Renderer"></a>Renderer</h4><p>组件会自动的生成componentNameRenderer.js文件,当需要覆盖组件的默认渲染机制时需要引用Render.js中定义的方法。<br>在Renderer中可以通过重写以下的渲染方法去定义组件渲染时的行为：</p>
+<ul>
+<li>render()</li>
+<li>rerender()</li>
+<li>afterRender()</li>
+<li>unrender()</li>
+</ul>
+<p>具体的使用方法会结合aura组件的生命周期在以后的篇章中细讲。</p>
+<h4 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h4><p>Design文件在lightning bundle中保存为componentName.design。<br>我们可以通过design控制组件的哪些属性可以暴露给Salesforce的构建工具,比如Lightning App builder、Experience builder或Flow builder。</p>
+<h4 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h4><p>可以在lightning bundle中引入SVG资源作为组件的自定义图标。SVG资源在组件bundle中被保存为componentName.svg.</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">svg</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//W3C//DTD SVG 1.1//EN&quot;</span></span></span><br><span class="line"><span class="meta">  <span class="meta-string">&quot;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&quot;</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/2000/svg&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">width</span>=<span class="string">&quot;400&quot;</span> <span class="attr">height</span>=<span class="string">&quot;400&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">circle</span> <span class="attr">cx</span>=<span class="string">&quot;100&quot;</span> <span class="attr">cy</span>=<span class="string">&quot;100&quot;</span> <span class="attr">r</span>=<span class="string">&quot;50&quot;</span> <span class="attr">stroke</span>=<span class="string">&quot;black&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">stroke-width</span>=<span class="string">&quot;5&quot;</span> <span class="attr">fill</span>=<span class="string">&quot;red&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce Aura</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Aura基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Aura组件ID</title>
+    <url>/2022/02/26/Salesforce_AuraComponentId/</url>
+    <content><![CDATA[<h1 id="组件的ID"><a href="#组件的ID" class="headerlink" title="组件的ID"></a>组件的ID</h1><p>HTML文档是一棵DOM树,树上有很多节点,每个节点一般都会有id属性,id属性具有唯一性,在同一个文档中不能重复,id是该节点的唯一标识。而Aura的组件元素中并不支持Id属性,它有两种类型的ID: Local ID和Global ID。local ID用于定位画面中的aura元素,global ID用于区分同一组件的多个实例,有时在调试代码时也会用到。</p>
+<h2 id="Local-IDs"><a href="#Local-IDs" class="headerlink" title="Local IDs"></a>Local IDs</h2><ul>
+<li>使用aura:id属性为组件创建的ID叫local ID,通过component.find(local ID)方法可以获取画面中的aura元素。</li>
+<li>local id 理论上是唯一的,但并不强制唯一。比如一组checkbox元素标签,可以给他们设置相同的local id。这时通过component.find(local ID)方法获取到的是元素列表。</li>
+<li>aura:id不支持表达式,只能用普通的字符串值作为元素的local id。</li>
+<li>只有Aura元素才可以定义aura:id,原生的html标签是没有该属性的。</li>
+</ul>
+<p>例:</p>
+<p>在controller.js中通过component.find(‘button1’) 可以获取到ui:button元素。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button1&quot;</span> <span class="attr">label</span>=<span class="string">&quot;button1&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>getLocalId():</strong> 此方法用于获取组件元素的local id, 通常用于通过事件获取事件的元素组件以后,获取元素组件的local id;</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取指定元素的locaL Id</span></span><br><span class="line">component.find(<span class="string">&quot;buttonId&quot;</span>).getLocalId()</span><br><span class="line"><span class="comment">// 通过事件源元素的locaL Id</span></span><br><span class="line">event.getSource().getLocalId()</span><br></pre></td></tr></table></figure>
+
+<p>Eg:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button_local_id&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Get Local ID&quot;</span> <span class="attr">onClick</span>=<span class="string">&quot;&#123;!c.getInput&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:outputText</span> <span class="attr">aura:id</span>=<span class="string">&quot;outName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;text&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">getInput: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> localId = cmp.find(<span class="string">&#x27;button_local_id&#x27;</span>).getLocalId(); <span class="comment">// button_local_id</span></span><br><span class="line">    <span class="keyword">var</span> myText = cmp.find(<span class="string">&#x27;outName&#x27;</span>);</span><br><span class="line">    myText.set(<span class="string">&#x27;v.value&#x27;</span>, localId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Global-ID"><a href="#Global-ID" class="headerlink" title="Global ID"></a>Global ID</h2><p>Global ID是组件实例化时为组件生成的唯一Id。在组件实例化时生成意味着global Id是动态的Id,所以在每一次调用组件时获得的global Id都是不同的。global Id可以用来区分组件元素的多个实例或者用于debugging操作。</p>
+<p><img src="/2022/02/26/Salesforce_AuraComponentId/Aura_GlobalId.PNG" alt="Aura_GlobalId.PNG"></p>
+<p>可以使用global Id作为元素的前缀或后缀为HTML元素创建唯一的ID。</p>
+<p>例如  </p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;&#123;!globalId + &#x27;_footer&#x27;&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用getGlobalId()方法在JavaScript中获取组件元素的GlobalId。</p>
+<blockquote>
+<p>var globalId &#x3D; cmp.getGlobalId();</p>
+</blockquote>
+<p>如果要根据元素的global Id去获取元素, 需要使用全局对象$A</p>
+<blockquote>
+<p>var cmp &#x3D; $A.getComponent(globalId)</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Retrieve Global Id from JavaScript:</span></span><br><span class="line">component.getGlobalId()</span><br><span class="line">component.find(“buttonId”).getGlobalId()</span><br><span class="line">event.getSource().getGlobalId() </span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce Aura</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Aura基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入Salsforce前端框架(一)</title>
+    <url>/2021/12/02/Salesforce_FrontendFrameworks/</url>
+    <content><![CDATA[<h1 id="深入Salsforce前端框架"><a href="#深入Salsforce前端框架" class="headerlink" title="深入Salsforce前端框架"></a>深入Salsforce前端框架</h1><p>Salesforce的生态系统允许开发者在Force.com平台上进行二次开发,使用Salesforce提供的丰富API接口构建满足业务的”应用程序”。在满足业务各种脑洞需求的同时,<strong>强大的定制化能力</strong>也赋予了产品持续的生命力。近十年随着前端技术的发展,很多新项目都开始了MVVM的转型,Salesforce也在不断推出符合最新web标准的新框架。</p>
+<ul>
+<li><p>s-control<br>s-control是SFDC最早的前端框架,画面就是一个单纯的html,开发者还需要在js中调用API来实现DML操作,无论是安全性还是用户体验都很不友好。s-control也无情的被Visualforce所取代。2010年3月之后，从未创建s-control的组织，以及新的组织，将不被允许创建它们。现有的s-control将不受影响，仍然可以编辑。建议将s-controls移动到Visualforce。<br>你需要创建一个custom button或custom link来显示s-control画面。或者将s-control放入web tab中让用户使用。</p>
+</li>
+<li><p>Visualforce Page<br>Visualforce是s-control的升级版框架,salesforce classical时代所有的自定义UI画面都要利用VF去开发,Vf可以构建较为复杂的UI界面,。</p>
+<ul>
+<li>Visaualforce提供了很多内置的语义化标签来帮助我们快速的构建sfdc风格的画面。</li>
+<li>多种封装后的Ajax方法使前台和后台的交互多元化,比如在VF page中apex:commandButton等标签绑定action，使用actionFunction,使用ajax toolkit，使用VF Remoting或者使用action:support都可以实现和后台的交互。</li>
+<li>Visualforce还可以与Salesforce系统中的标准功能相结合,对标准功能进行扩展或重写。比如,用vf来重写Account详细画面的view button。</li>
+</ul>
+</li>
+<li><p>Lightning Component Framework<br>Spring’19(API version 45.0)开始, Salesforce正式启用Lightning experience,在前端框架方面也做了比较大的转型,从传统页面应用架构(Visualforce)过度到目前主流的单页面应用。Salesforce为Lightning组件框架引入了两种不同的编程模型(Lightning Aura components和Lightning Web Components)为移动端和桌面设备开发spa应用。组件化成为了salesforce构建app的趋势,将组件配置Lightning App Builder和Experience Builder中可以通过复用组件节省开发成本。同时,Aura组件和LWC组件是可以共存和交互的,salesforce提供的很多功能对于这两种框都提供了API.</p>
+<ul>
+<li><p>Lightning aura Component<br>Lightning aura Components是基于开源的aura.js(<a href="https://github.com/aurajs/aura">https://github.com/aurajs/aura</a>)构建的框架。用于在Lightning Platform上构建动态，响应式用户界面的单页应用程序。它在客户端使用JavaScript，在服务器端使用Apex,事件驱动是整个框架的核心。</p>
+</li>
+<li><p>Lightning Web Component<br>Lightning Web Component是salesforce基于最新Web标准构建的新型轻量级框架,未来很长一段时间都会是构建Lightning Platform自定义画面的首选。</p>
+<ul>
+<li>Lightning Web Component使用了HTML5的最新特性,比如Custom Elements,template, shadow DOM,装饰器 ,引入了ECMAScript 6中很多新的特性。比起Aura组件,lwc和Vue, React这些主流前端框架的特性都极为接近，是一款味道纯正的单页面框架。</li>
+<li>Lwc是浏览器端渲染的框架,所以我们不仅能在Salesforce Platform中使用它,也可以在其他平台中引入Lwc(<a href="https://lwc.dev/guide/introduction">https://lwc.dev/guide/introduction</a>)。我们可以用Webpack,TypeScript和Babel来build应用,并在Heroku、goole或其他任何地方运行它。Aura虽然也是开源框架, 但只能在Salesforce platform中使用,因为Aura组件是在Salesforce服务端渲染的。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="我所亲见的Salesforce前端技术变革"><a href="#我所亲见的Salesforce前端技术变革" class="headerlink" title="我所亲见的Salesforce前端技术变革"></a>我所亲见的Salesforce前端技术变革</h2><blockquote>
+<p>“Atwood 定律：任何能够用 JavaScript 编写的应用程序，最终必将用 JavaScript 编写。”<br>-Jeff Atwood</p>
+</blockquote>
+<p>  过去的十年,是前端技术野蛮生长的年代,Salesforce花费了很多时间去完善平台的用户体验。从VF到Aura再到Lwc,从传统Web应用到单页应用程序(SPA),每一次Release,每一次技术细节的提高,不仅给开发者带来了很多新的Web概念,用户体验也不断提升。</p>
+<h3 id="传统Web应用和单页应用-SPA"><a href="#传统Web应用和单页应用-SPA" class="headerlink" title="传统Web应用和单页应用(SPA)"></a>传统Web应用和单页应用(SPA)</h3><p>  目前有两种通用方法来创建Web应用: 在服务器上执行大部分应用程序逻辑的传统Web应用,以及在Web浏览器中执行大部分用户界面逻辑的单页应用程序(SPA)。</p>
+<ul>
+<li><p><strong>传统Web应用</strong><br>  每一次页面的跳转,后台服务器都会返回一个新的html文件去加载。每次加载都会刷新页面所有资源,每个公共资源(js、css等)都需要选择性重新加载。</p>
+<p>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-1.PNG" alt="Lightning_0-1.PNG"><br>  优点:</p>
+<ul>
+<li>首屏加载时间快:  访问页面时，服务器返回一个HTML文件,浏览器解析HTML文件,将DOM节点绘制到浏览器上,这个过程中,只经历了一次HTTP请求,所以页面加载速度比较快。</li>
+<li>SEO效果好:  搜索引擎只识别HTML内容,传统页面的开发形式是将展示内容放在HTML中,就被搜索引擎的爬虫抓取并分析。而我们每个页面所有的内容都放在html中，所以这种多页应用SEO排名效果好。</li>
+</ul>
+</li>
+<li><p><strong>单页面(SPA)应用</strong><br> SPA单页应用从始至终只有一个页面,不会重新加载整个页面。仅在 Web 页面初始化时加载相应的 HTML,JavaScript和CSS。一旦页面加载完成,不会因为用户的操作而进行页面的重新加载或跳转。而是利用<strong>路由机制</strong>实现 HTML 内容的变换，UI 与用户的交互，避免页面的重新加载。说得直白点就是实现了前端和后端的彻底解耦。后端只需要提供数据接口,前端只需要调用接口，无需关心后端的具体实现。</p>
+<p>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-2.PNG" alt="Lightning_0-2.PNG"></p>
+<blockquote>
+<p>HTML路由机制学习: <a href="https://www.cnblogs.com/lguow/p/10921564.html">https://www.cnblogs.com/lguow/p/10921564.html</a></p>
+</blockquote>
+<p>  优点:</p>
+<ul>
+<li><p>无缝切换 移动端体验更好:  整个过程不涉及到页面的重新刷新,页面每次切换跳转时，并不需要处理html文件的请求，这样就节约了很多HTTP发送时延，所以我们在切换页面的时候速度很快。</p>
+</li>
+<li><p>公共资源只加载一次:  一些工具函数，只需要在入口页加载一次，全局就能使用。而传统多页面在没有实现模块化的情况下，每个页面都是需要加载公共资源。</p>
+<p>缺点：</p>
+</li>
+<li><p>首屏加载时间慢:首屏时需要请求一次html，同时还要加载所有项目所需的静态资源脚本,相对于多页面应用，首屏时间慢。</p>
+</li>
+<li><p>不利于SEO: 因为搜索引擎只认识html里的内容，不认识js渲染生成的内容，搜索引擎不识别，会导致单页应用做出来的网页在搜索引擎上的排名差。</p>
+</li>
+<li><p>兼容性问题: 通过JS脚本去渲染HTML页面,对JS的语法要求还是比较高的。如果浏览器不识别某些ES6的语法,就会发生页面的兼容性问题。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Salesforce-Classic-vs-Lightning"><a href="#Salesforce-Classic-vs-Lightning" class="headerlink" title="Salesforce Classic vs Lightning"></a><strong>Salesforce Classic vs Lightning</strong></h3><ul>
+<li><p>Classic<br>  Salesforce Classic中,画面是传统Web多页面应用。所以当加载页面时,只有初始的HTML加载。当用户单击一个Tab、Link、或者重新加载页面时，客户机会请求SFDC服务器去加载新的HTML。基本上,每次发出post请求时,都会返回新的HTML让浏览器加载。<br>  在下图中，可以看到在断网状态下,当我们在classical模式下切换页面时,因为网络中断导致http请求失败,新的HTML并不会被加载。<br>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-3.PNG" alt="Lightning_0-3.PNG"></p>
+</li>
+<li><p>Lightning<br>  在lightning中，所有需要的HTML和静态资源都在初始化页面时加载的,这也是为什么我们在切换到Lightning mode下会感觉画面第一次加载时会感觉很慢。在一次性加载所需资源后,为了从Salesforce获取指定的数据,浏览器对服务器发送ajax请求(创建XMLHttpReq对象)，只是为了获取JSON数据。不需要一次又一次地加载HTML。<br>  在下图中,在断网状态下,客户端无法访问服务器时,画面并不会奔溃,只是会弹出一个错误消息,Contact Tab的所有资源都已经被加载。<br>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-4.PNG" alt="Lightning_0-4.PNG"></p>
+</li>
+</ul>
+<h3 id="Salesforce的MVC架构模式"><a href="#Salesforce的MVC架构模式" class="headerlink" title="Salesforce的MVC架构模式"></a>Salesforce的MVC架构模式</h3><p>  Model-View-Controller(MVC)是一种常见的软件架构模式,把软件系统分为三个基本的部分:模型（数据模型）,视图（View）,和控制器（Controller）。在Salesforce platform中,无论你采购的是Sales cloud, Community Cloud还是Service Cloud,都需要了解产品之下的数据,业务逻辑,画面展示这三者之间的联系。<br>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-5.PNG" alt="Lightning_0-5.PNG"></p>
+<p>  Model: 在Salesforce platform中数据模型层是你要访问的各种Object对象。它由标准的Object(Account,Contact…)和自定义Object组成,Object的数据其实是存放在Oracle DB中。<br>  View: 视图层负责数据的展示和与用户的UI交互。在Salesforce中,visualforce页面,pagelayout和Tab都可以看作是View层。<br>  Controller: Controller是实际的业务逻辑层。Workflow、Apex trigger和Apex controller都可以看作是控制层的一部分。</p>
+<h3 id="传统Web页面的代表-Visualforce-Page"><a href="#传统Web页面的代表-Visualforce-Page" class="headerlink" title="传统Web页面的代表: Visualforce Page"></a>传统Web页面的代表: Visualforce Page</h3><p>  通过上面的介绍,我们大概已经知道了VF是传统Web多页面应用。并且在Salesforce的MVC架构中扮演View层,负责数据的展示和一些UI交互。<br>  哪些场景下我们可以考虑开发VF画面呢？</p>
+<ul>
+<li><p>创建email templates</p>
+</li>
+<li><p>开发 mobile&#x2F;pc端的UI画面，然后放在Web Tab中展示给终端用户</p>
+</li>
+<li><p>将Salesforce中的数据展示未PDF</p>
+</li>
+<li><p>需要自定义画面来嵌入standard page layouts</p>
+</li>
+<li><p>覆盖标准的Salesforce page</p>
+<p>Visualforce Page的主要构成:  </p>
+</li>
+<li><p>Visualforce Markup: Visualforce由一系列XML标记组成,每种内置标签都封装了许多不同的属性使我们可以轻松构建Classical画风的页面<br><img src="/2021/12/02/Salesforce_FrontendFrameworks/VF_0-1.PNG" alt="VF_0-1.PNG"></p>
+</li>
+<li><p>Visualforce Controller: visualforce控制器是用Apex编程语言编写的,用来处理业务逻辑和与DB的交互。</p>
+</li>
+</ul>
+<h4 id="谈谈我的认识"><a href="#谈谈我的认识" class="headerlink" title="谈谈我的认识"></a>谈谈我的认识</h4><ul>
+<li><p>VF作为一款多页面应用,因为引入了Ajax,其实用户体验还算不错,在VF种也封装了多种Ajax方法来实现实现异步交互。</p>
+</li>
+<li><p>VF page可以方便的转化为HTML5画面,这给前端的展示部分带来了无限的可能,尤其对于Mobile端。我们可以引入很多流行的第三方框架,比如引入Angular.js 将你的应用构建为SPA应用。引入响应式的CSS框架(Bootstrap…)来实现页面的多端展示。和Lightning 框架一对比,VF其实有着更强大的扩展性,对开发者的前端技能也要求更为苛刻。</p>
+  <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">apex:page</span> <span class="attr">docType</span>=<span class="string">&quot;html-5.0&quot;</span> <span class="attr">sidebar</span>=<span class="string">&quot;false&quot;</span> <span class="attr">shhowHeader</span>=<span class="string">&quot;false&quot;</span>  <span class="attr">standardStylesheets</span>=<span class="string">&quot;false&quot;</span> <span class="attr">cache</span>=<span class="string">&quot;true&quot;</span> <span class="attr">controller</span>=<span class="string">&quot;MyController&quot;</span> &gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>足够多的内置标签,只要掌握了其中一部分核心标签的用法就可以很快的上手开发。</p>
+</li>
+<li><p>在我做过的很多Classical项目中,VF中都有大量低质量的js代码导致画面的维护性很差。画面中的ViewState也时常会有超限的风险。</p>
+</li>
+</ul>
+<h4 id="谈谈我的建议"><a href="#谈谈我的建议" class="headerlink" title="谈谈我的建议"></a>谈谈我的建议</h4><ul>
+<li>JavaScript层面上,将核心的方法都封装成js文件引入静态资源,尽量减少画面中定义很多重复的js方法。</li>
+<li>因为有些浏览器还不支持HTML5的Selector选择器,可以使用jQuery框架来简化链式操作的难度。</li>
+<li>一开始构建项目时就考虑到画面的呈现方式,是否需要引入响应式的CSS框架去做页面布局。</li>
+</ul>
+<h3 id="前端组件化思想"><a href="#前端组件化思想" class="headerlink" title="前端组件化思想"></a>前端组件化思想</h3><p>  从Salesforce在2014年发布Lightning Experience以来,web标准也机缘巧合的迎来了巨大的变革。这一演变受到了几个知名组织的主导，包括万维网联盟(W3C)和ECMA国际技术委员会39 (TC39),Salesforce也在引领web标准方面发挥了关键作用,Salesforce会定期与主要浏览器供应商会面,适时调整框架侧重的优先级和方向。</p>
+<p>  在了解Lightning Component框架前,我觉得”组件化”是逃不过的话题。Salesforce除了考虑页面的安全性外,让你的页面作为组件可以任意配置在平台中任何需要的地方,让Admin无需写代码,通过Lightning App Builder或者Community Builder就能构建出酷炫的画面,也是设计者最为关心的。那么到底什么是组件化呢？</p>
+<h4 id="什么是前端组件化组件化"><a href="#什么是前端组件化组件化" class="headerlink" title="什么是前端组件化组件化?"></a>什么是前端组件化组件化?</h4><p>  如果把手机看作一个画面,你想实现某个功能需要去下载相应的app,这其实就是组件化思想,这里的app就像是画面上的每个组件。整个页面都由组件组成而不是单纯的在一个页面上写html和css,开发者可以随意互换各个组件的位置。</p>
+<p>  在很多Visualforce Page中大家肯定都遇到过,将一个页面的几百行,甚至上千行的代码逻辑写在一个 js 文件中。通常这种代码都很难读下去,更别说要维护代码和添加功能了,因为你不知道改动一个地方,会不会出现意想不到的bug。</p>
+<p>  前端组件化开发，就是将页面的某一部分独立出来，将这一部分的 数据层（M）、视图层（V）和 控制层（C）用黑盒的形式全部封装到一个组件内，暴露出一些开箱即用的函数和属性供外部组件调用。</p>
+<p>  一个前端组件，包含了 HTML、CSS、JavaScript,包含了组件的模板、样式和交互等内容，基本上涵盖了组件的所有的内容，外部只要按照组件设定的属性、函数及事件处理等进行调用即可，完全不用考虑组件的内部实现逻辑，对外部来说，组件是一个完全的黑盒。</p>
+<h4 id="为什么要有组件化"><a href="#为什么要有组件化" class="headerlink" title="为什么要有组件化?"></a>为什么要有组件化?</h4><ul>
+<li><p>在开发复杂画面时,如果一个画面中引入大量js代码,很容易发生共用js发生变量污染。</p>
+</li>
+<li><p>增加开发效率,增加代码的可维护性和扩展性</p>
+</li>
+<li><p>优秀的代码应该是高内聚,低耦合。耦合性的降低，提高了系统的伸展性，降低了开发的复杂度，提升开发效率，降低开发成本。</p>
+</li>
+</ul>
+<h3 id="前端MVC和MVVM"><a href="#前端MVC和MVVM" class="headerlink" title="前端MVC和MVVM"></a>前端MVC和MVVM</h3><ul>
+<li>前端MVC:</li>
+</ul>
+<p>view操作会触发controller去改变model,然后model再去改变视图.</p>
+<p>如果前端没有框架，只使用原生的html+js，MVC模式可以这样理解。将html看成view;js看成controller,负责处理用户与应用的交互,响应对view的操作（对事件的监听）,调用Model对数据进行操作，完成model与view的同步（根据model的改变，通过选择器对view进行操作）;将js的ajax当做Model，也就是数据层，通过ajax从服务器获取数据。<br><img src="/2021/12/02/Salesforce_FrontendFrameworks/Front_MVC.PNG" alt="VF_0-1.PNG"></p>
+<ul>
+<li>前端MVVM:<br>MVVM即Model-View-ViewModel，MVVM的设计原理是基于MVC的。ViewMode看作是Model和View的连接桥，View可以通过事件绑定Model，Model可以通过数据绑定View，通过ViewMode可以实现数据和视图的完全分离。<br>MVVM与MVC最大的区别就是：它实现了View和Model的自动同步，也就是当Model的属性改变时，我们不用再自己手动操作Dom元素，来改变View的显示,而是改变属性后该属性对应View层显示会自动改变。<br><img src="/2021/12/02/Salesforce_FrontendFrameworks/Front_MVVM.PNG" alt="VF_0-1.PNG"></li>
+</ul>
+<p>MVVM一个最显著的特征:数据双向绑定。Lwc没有这个,Lwc是一个单向数据流的库,用状态驱动视图。</p>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce前端框架</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Salesforce前端框架</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入Salsforce前端框架(二)</title>
+    <url>/2021/12/20/Salesforce_FrontendFrameworksII/</url>
+    <content><![CDATA[<h1 id="深入Salsforce前端框架-二"><a href="#深入Salsforce前端框架-二" class="headerlink" title="深入Salsforce前端框架(二)"></a>深入Salsforce前端框架(二)</h1><p>此篇会结合官方开发者文档，着重介绍一下Lightning Aura组件。使小伙伴们在学习该组件的具体用法前，对组件的核心特性有一个基本认识。</p>
+<h2 id="什么要引入Aura框架"><a href="#什么要引入Aura框架" class="headerlink" title="什么要引入Aura框架?"></a>什么要引入Aura框架?</h2><ul>
+<li><p>移动端优先原则<br>移动端设备的普及让企业的业务部门开始使用不同的移动设备去处理日常事务。但是传统的Visualforce页面在移动端的体验并不好，如果在构建VF页面时没有引入响应式的CSS框架，我们在手机端就无法正常操作Vf页面构筑的应用。Lightning组件使用响应式设计的Web页面，画面会根据浏览器窗口变化，达到自适应的效果，并且支持最新的浏览器标准。在aura组件中，我们不引入Bootstrap就可以完美解决设备兼容性问题，不引入jQuery就解决了浏览器兼容性问题，提高开发效率的同时也提高了用户体验。</p>
+</li>
+<li><p><a href="https://developer.salesforce.com/docs/component-library/overview/components">开箱即用的组件库</a><br>Salesforce为我们封装好了大部分常用的lightning组件，并提供了详尽的文档说明。在构建画面前，首先检查组件库，看是否有满足所需功能的组件。利用这些现成的组件可以节省造轮子的时间。<br>比如，现在客户要求在画面上加一个轮播组件来滚动商品信息。这种复杂的组件如果不引入其他的js库是很难短时间内完成的，如果使用lightning提供的<a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:carousel/example#lightningcomponentdemo:exampleCarousel">Basic Carousel</a>组件，就可以在短时间内完成需求。<br><img src="/2021/12/20/Salesforce_FrontendFrameworksII/Aura_0-1.PNG" alt="Aura_0-1.png"></p>
+</li>
+<li><p>鼓励模块化设计模式，可以提高组件单元的利用率。</p>
+</li>
+<li><p>因为是单页面应用，比起Visualforce page渲染速度更快。</p>
+</li>
+<li><p>组件的开发不依赖于其他的外部框架。</p>
+</li>
+<li><p>与Lightning Experiecne和Communities无缝集成。</p>
+</li>
+</ul>
+<h2 id="Aura组件的核心"><a href="#Aura组件的核心" class="headerlink" title="Aura组件的核心"></a>Aura组件的核心</h2><h3 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h3><p>Lightning时代，整个平台更加灵活。我们能够使用独立可复用的lightning组件来构建大型应用，每个复杂的画面都可以抽象为一个组件树，只要合理的分配好每个组件单元的功能，理清楚组件之间关系和数据流向，就可以构建出耦合性很低的应用。此外，在使用Lightning App Builder或者Community Builder构建页面时，Salesforce也提供了相应的接口使自定义开发的组件与SFDC的一些标准组件相结合共通构建画面。</p>
+<ul>
+<li><p>设计组件的建议<br>尽量不要在一个组件中构建整个页面。组件越大，你可能一遍又一遍的开发相同的功能，维护起来也很难定位到正确的位置进行更改。保持组件小巧简单，将大型画面分解为更小、可管理、可重用的组件，可以降低影响其他功能的风险</p>
+</li>
+<li><p>Aura组件的配置场所<br>作为一个组件单元，lightning组件可以在平台的很多地方使用，只要继承相应的接口即可。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>配置场所</th>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>custom tab</td>
+<td>implements&#x3D;”force:appHostable”</td>
+<td>组件在Lightning Experience或者Salesfroce手机App的导航元素的Tab中使用</td>
+</tr>
+<tr>
+<td>custom action</td>
+<td>implements&#x3D;”force:lightningQuickAction” 或者 force:lightningQuickActionWithoutHeader</td>
+<td>组件作为action的执行对象通过配置在object pagelayout(Record-Specific Action)或者 global Pagelayout(Global Action)中使用</td>
+</tr>
+<tr>
+<td>Override Standard Actions</td>
+<td>implements&#x3D;”lightning:actionOverride”</td>
+<td>覆盖Object中标准的button或者Link，比如’EDIT’或者’View’</td>
+</tr>
+<tr>
+<td>Lightning Pages 和 Lightning App Builder</td>
+<td>implements&#x3D;”flexipage:availableForAllPageTypes”</td>
+<td>该组件可以用在Lightning页面或者Lightning App Builder中使用，比如配置utility bar</td>
+</tr>
+<tr>
+<td>Lightning Page</td>
+<td>implements&#x3D;”flexipage:availableForRecordHome， force:hasRecordId” and access&#x3D;”global”</td>
+<td>如果组件只是在Record page中使用，而不需要配置在其他页面，使用’flexipage:availableForRecordHome’接口就可以</td>
+</tr>
+<tr>
+<td>Lighnting Communities Page</td>
+<td>implements&#x3D;”forceCommunity:availableForAllPageTypes” and access&#x3D;”global”</td>
+<td>组件能够在Community Builder中配置</td>
+</tr>
+<tr>
+<td>Lightning Page</td>
+<td>implements&#x3D;”clients:availableForMailAppAppPage”</td>
+<td>当salesforce与outlook或者Gmail集成时，在Mail App Lightning page中使用</td>
+</tr>
+<tr>
+<td>Lightning Flow</td>
+<td>implements&#x3D;”lightning:availableForFlowScreens” access&#x3D;”global”</td>
+<td>将Aura组件配置在Flow的Screen画面</td>
+</tr>
+</tbody></table>
+<p>上面列举的也只是一部分配置Aura组件的场所，更加具体的配置方法与接口查询，请参照权威的<a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_using_lex_s1.htm">官方开发者文档</a></p>
+<p>实际项目中，熟悉组件的配置接口是很有帮助的。只要我们熟悉了组件配置的场所和输入参数，就可以脑补出每个场景中组件能满足的业务需求。另外，开发过程中不要去继承不需要的接口，确保每个组件都能出现在合适的配置目录中。</p>
+<h3 id="理解事件驱动架构"><a href="#理解事件驱动架构" class="headerlink" title="理解事件驱动架构"></a>理解事件驱动架构</h3><h4 id="什么是事件驱动架构"><a href="#什么是事件驱动架构" class="headerlink" title="什么是事件驱动架构?"></a>什么是事件驱动架构?</h4><p>我们与世界的互动并不是同步，线性的，严格按照提问-回应的模式进行的，而是通过消息驱动，不断的接发信息。当我们接收到消息，会对这些消息做出反应。使用消息来传达事件状态的改变——Event Driven Architecture(EDA)，即事件驱动架构，也可以称为Message Driven Architecture(MDA)，消息驱动架构。基于事件驱动架构，可以构建高度解耦的系统，需要互相通信的服务不用通过特定的库或其它服务紧密耦合在一起。我们只需让服务监听应用程序发出的事件(消息)流，接收到事件(消息)后作出对应的响应，就可以在应用程序中快速添加新功能。</p>
+<p>一个事件驱动系统由事件消费者和事件产生者组成，事件消费者向事件管理器订阅事件，事件产生者向事件管理器发布事件。当事件管理器从事件产生者那接收到一个事件时，事件管理把这个事件转送给相应的事件消费者。</p>
+<p><img src="/2021/12/20/Salesforce_FrontendFrameworksII/Aura_0-2.PNG" alt="Aura_0-2.png"></p>
+<p>看上图,event-driven架构由Event procedures、Event consumers和Event Bus组成。</p>
+<p>Event producer: 事件消息的发布者。<br>Event consumer: 事件消息的订阅者。<br>EventBus: 事件总线是对发布-订阅模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到一种解耦的目的。可以理解为沟通桥梁的概念，是所有组件共用的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。  </p>
+<h4 id="Aura组件的事件驱动架构"><a href="#Aura组件的事件驱动架构" class="headerlink" title="Aura组件的事件驱动架构"></a>Aura组件的事件驱动架构</h4><ul>
+<li><p>lightning组件之间是基于事件驱动模型来处理用户界面的交互的<br>组件之间的通信常见的有父子组件通信，兄弟组件通信。父子组件通信就很简单，父组件会通过 props 向下传数据给子组件。而子组件有事情要告诉父组件或者两个组件没有任何引入和被引入关系，就需要通过event实现组件之间的通信，</p>
+<ul>
+<li><p>事件源：产生事件的地方，可以是页面中的输入框，按钮等等；</p>
+</li>
+<li><p>事件： 点击，失去焦点，初始化等等；</p>
+</li>
+<li><p>事件对象：当在事件源触发某个事件的时候，一般会产生一个事件对象，记录着事件的事件源相关信息以及相关的事件信息；</p>
+</li>
+<li><p>事件处理程序（Event Handler）：对当前的事件进行处理的函数。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Aura中可以创建两种类型的自定义Event来传递数据: Application Event 和Component Event.</p>
+<ul>
+<li>Component Events<br>事件的消费者是组件本身或者父组件 component events只能在子组件中register，在父组件中处理.<br>在下面的例子中，通过使用组件事件，将子组件的值通过event传递给父组件。</li>
+</ul>
+<blockquote>
+<p>创建Component event，注意type需要是’COMPONENT’</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--SampleComponentEvent.evt--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:event</span> <span class="attr">type</span>=<span class="string">&quot;COMPONENT&quot;</span> <span class="attr">description</span>=<span class="string">&quot;Sample Component Event&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;message&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span> <span class="attr">default</span>=<span class="string">&quot;Hello World!!&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:event</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>子组件是事件源，是消息的发布者。需要利用aura:registerEvent标签在子组件中注册事件。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--Child.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:registerEvent</span> <span class="attr">name</span>=<span class="string">&quot;sampleCmpEvent&quot;</span> <span class="attr">type</span>=<span class="string">&quot;c:SampleComponentEvent&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">label</span>=<span class="string">&quot;Click to fire the event&quot;</span> <span class="attr">variant</span>=<span class="string">&quot;brand&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.childComponentEvent&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Child Component JS Controller:<br>当用户触发onclick鼠标事件后，我们在子组件的controller中触发事件，将消息(传递的数据)传递给消息队列。<br>调用 event.setParam() 或者event.setParams()，可以设定传递的参数。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">childComponentEvent</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp， event， helper</span>) </span>&#123; </span><br><span class="line">        <span class="comment">//Get the event using registerEvent name. </span></span><br><span class="line">        <span class="keyword">var</span> cmpEvent = cmp.getEvent(<span class="string">&quot;sampleCmpEvent&quot;</span>); </span><br><span class="line">        <span class="comment">//Set event attribute value</span></span><br><span class="line">        cmpEvent.setParams(&#123;<span class="string">&quot;message&quot;</span> : <span class="string">&quot;Welcome &quot;</span>&#125;); </span><br><span class="line">        cmpEvent.fire(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>Parent Component:<br>父组件是事件消息的订阅者，在父组件中设置事件的处理程序。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--Parent.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;eventMessage&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:handler</span> <span class="attr">name</span>=<span class="string">&quot;sampleCmpEvent&quot;</span> <span class="attr">event</span>=<span class="string">&quot;c:SampleComponentEvent&quot;</span> <span class="attr">action</span>=<span class="string">&quot;&#123;!c.parentComponentEvent&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;slds-m-around_xx-large&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">c:Child</span> /&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;!v.eventMessage&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过aura:handler的action属性来执行处理逻辑。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    (&#123;</span><br><span class="line">        <span class="attr">parentComponentEvent</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp， event</span>) </span>&#123; </span><br><span class="line">            <span class="comment">//Get the event message attribute</span></span><br><span class="line">            <span class="keyword">var</span> message = event.getParam(<span class="string">&quot;message&quot;</span>); </span><br><span class="line">            <span class="comment">//Set the handler attributes based on event data </span></span><br><span class="line">            cmp.set(<span class="string">&quot;v.eventMessage&quot;</span>， message + <span class="string">&#x27;Wicky666&#x27;</span>);</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Application Events<br>lightning application中的任何组件都可以订阅改事件。<br>下面的例子中，我们通过event将数据从componet1传到component2。</li>
+</ul>
+<blockquote>
+<p>创建一个Application Events。type需要是”APPLICATION”。</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--SampleApplicationEvent.evt--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:event</span> <span class="attr">type</span>=<span class="string">&quot;Application&quot;</span> <span class="attr">description</span>=<span class="string">&quot;Sample Application Event&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;message&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:event</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Component1:</p>
+<!--Component1cmp-->
+<p><a href="aura:component">aura:component</a><br>    &lt;aura:registerEvent name&#x3D;”SampleApplicationEvent” type&#x3D;”c:SampleApplicationEvent”&#x2F;&gt;<br>    &lt;lightning:button label&#x3D;”Click to fire the event” variant&#x3D;”brand” onclick&#x3D;”{!c.component1Event}”&#x2F;&gt;<br></p>
+<p>Component1 JS Controller:<br>使用$A.get(“e.myNamespace:myAppEvent”) 来获取事件，通过event.setParam() 或者 event.setParams()设定参数.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">component1Event</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp， event，helper</span>) </span>&#123; </span><br><span class="line">        <span class="comment">//Get the event using event name. </span></span><br><span class="line">        <span class="keyword">var</span> appEvent = $A.get(<span class="string">&quot;e.c:SampleApplicationEvent&quot;</span>); </span><br><span class="line">        <span class="comment">//Set event attribute value</span></span><br><span class="line">        appEvent.setParams(&#123;<span class="string">&quot;message&quot;</span> : <span class="string">&quot;Welcome &quot;</span>&#125;); </span><br><span class="line">        appEvent.fire(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>Component2:</p>
+<p>在Component2中订阅事件，aura:handler的action属性来执行处理逻辑。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--Component2.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;eventMessage&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:handler</span> <span class="attr">event</span>=<span class="string">&quot;c:SampleApplicationEvent&quot;</span> <span class="attr">action</span>=<span class="string">&quot;&#123;!c.component2Event&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;slds-m-around_xx-large&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;!v.eventMessage&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Component2 JS Controller:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">component2Event</span> : <span class="function"><span class="keyword">function</span>(<span class="params">cmp， event</span>) </span>&#123; </span><br><span class="line">        <span class="comment">//Get the event message attribute</span></span><br><span class="line">        <span class="keyword">var</span> message = event.getParam(<span class="string">&quot;message&quot;</span>); </span><br><span class="line">        <span class="comment">//Set the handler attributes based on event data </span></span><br><span class="line">        cmp.set(<span class="string">&quot;v.eventMessage&quot;</span>， message + <span class="string">&#x27;Biswajeet&#x27;</span>);         </span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>Component1和Component2是同一应用下的不同组件。<br>Lightning Application:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:application</span> <span class="attr">extends</span>=<span class="string">&quot;force:slds&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">c:Component1</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">c:Component2</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:application</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Lightning-Locker-Service"><a href="#Lightning-Locker-Service" class="headerlink" title="Lightning Locker Service"></a>Lightning Locker Service</h3><p>Salesforce从Winter’17 版本开始在Lightning框架中引入了Locker Service机制。Lightning Locker Service就像位于浏览器和DOM(document object)之间中间层，它只允许安全的请求通过并访问真实的DOM。Locker Service 机制的引入可以增强 Lightning 应用的安全性。<br><img src="/2021/12/20/Salesforce_FrontendFrameworksII/Aura_0-3.PNG" alt="Aura_0-3.png"></p>
+<h4 id="DOM和浏览器之间的关系"><a href="#DOM和浏览器之间的关系" class="headerlink" title="DOM和浏览器之间的关系"></a>DOM和浏览器之间的关系</h4><p>浏览器将DOM翻译成html和Images。<br>JavaScript 操作DOM，处理完DOM，此时浏览器得到DOM这棵树，将其渲染成HTML，加上这种css，最终是我们看到的页面。当网页加载完成后，就可以看到我们访问的页面。反之，当网页被加载时，浏览器会创建页面的文档对象模型。HTML DOM模型被构造为对象的树。</p>
+<h4 id="理解DOM-Access"><a href="#理解DOM-Access" class="headerlink" title="理解DOM Access"></a>理解DOM Access</h4><p>Lighting Locker Service会限制组件代码直接访问其他属于不同来源(命名空间)的组件。<br>让我们用一个简单的例子来理解这一点。</p>
+<p>下面这个组件有两个属于不同命名空间的组件 div 和lightning 命名空间下的 button 元素</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--LockerServiceTestCmp.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">aura:id</span>=<span class="string">&#x27;myDiv&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:button</span> <span class="attr">variant</span>=<span class="string">&quot;brand&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Click Me&quot;</span> <span class="attr">aura:id</span>=<span class="string">&quot;myBtn&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;&#123;!c.handleClick&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">lightning:button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;</span><br><span class="line">    <span class="attr">handleClick</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component， event， helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 打印window对象</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;window:::::&#x27;</span> + <span class="built_in">window</span>);</span><br><span class="line">        <span class="comment">// 打印document对象</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;document:::::&#x27;</span> + <span class="built_in">document</span>);</span><br><span class="line">        <span class="comment">// 打印div元素</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;myDiv::::::&#x27;</span> + component.find(<span class="string">&quot;myDiv&quot;</span>).getElement());</span><br><span class="line">        <span class="comment">// 打印 lightning 命名空间下的 button 元素</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;myBtn::::::&#x27;</span> + component.find(<span class="string">&quot;myBtn&quot;</span>).getElement());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>使用aura application来调用我们的组件</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--LockerServiceTestCmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:application</span> <span class="attr">extends</span>=<span class="string">&quot;force:slds&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">c:LockerServiceTestCmp</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:application</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行效果如下所示:<br><img src="/2021/12/20/Salesforce_FrontendFrameworksII/Aura_0-4.PNG" alt="Aura_0-4.png"><br>可以看到，当我们想访问lightning:button元素时，发生了报错。这是因为locker service不允许组件访问的DOM元素，因为button在’lightning’命名空间下，而我们的组件在’c’命名空间下。组件只能遍历和访问在与自己相同的命名空间中创建的DOM元素。  </p>
+<p>从上面的打印结果也能看出，Locker Service 的主要作用就是将不同命名空间的组件封装起来，限制它们之间的访问。Locker Service预定义了一些安全组件，将实际的DOM元素封装起来：</p>
+<ul>
+<li>SecureComponent：将同一命名空间下的 Component 元素封装起来</li>
+<li>SecureComponentRef：另一命名空间下的 Component 元素</li>
+<li>SecureWindow：将 window 元素封装起来</li>
+<li>SecureDocument：将 document 元素封装起来</li>
+</ul>
+<h4 id="强制使用ES5严格模式"><a href="#强制使用ES5严格模式" class="headerlink" title="强制使用ES5严格模式"></a>强制使用ES5严格模式</h4><p>Locker Service自动在我们的JS代码中强制使用ECMAScript(ES5)严格模式。如果我们写的JS代码在严格模式下是无效的，会看到意想不到的错误。如果我们使用外部JS库，我们需要确保它们也遵循<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Strict_mode">严格模式</a>。</p>
+<h4 id="为什么需要引入Lightning-Locker-Service"><a href="#为什么需要引入Lightning-Locker-Service" class="headerlink" title="为什么需要引入Lightning Locker Service?"></a>为什么需要引入Lightning Locker Service?</h4><p>不同来源的组件会以DOM的形式存在于同一个页面中。如果没有任何的防护措施，这些DOM之间是可以互相访问的，从而带来安全隐患。一个组件可以遍历另一个组件的DOM，这意味着我的托管包组件可以读取或遍历我的组织的自定义组件的DOM。<br>那么总结一下引入Lightning Locker Service的必要性:</p>
+<ul>
+<li>保护lightning组件免受web安全漏洞的影响。</li>
+<li>组件只能访问到由本组件代码创建生成的DOM。</li>
+<li>Locker Services为我们的组件添加了命名空间，防止组件代码直接从其他命名空间的组件访问数据。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce前端框架</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Salesforce前端框架</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入Salsforce前端框架(三)</title>
+    <url>/2021/12/25/Salesforce_FrontendFrameworksIII/</url>
+    <content><![CDATA[<h1 id="深入Salsforce前端框架-三"><a href="#深入Salsforce前端框架-三" class="headerlink" title="深入Salsforce前端框架(三)"></a>深入Salsforce前端框架(三)</h1><p>上一篇主要介绍了Aura组件的核心设计架构，让大家对组件化的设计思想，事件驱动架构，以及Lightning Locker Service有了基本的认识。此篇会着重介绍Lightning Web Component组件，让大家对lwc组件的核心以及相关的web标准有更深刻的体会。</p>
+<h2 id="什么是-Lightning-Web-Component-LWC"><a href="#什么是-Lightning-Web-Component-LWC" class="headerlink" title="什么是 Lightning Web Component (LWC)?"></a>什么是 Lightning Web Component (LWC)?</h2><p>LWC是Salesforce基于最新的Web标准构建的开源前端框架。LWC引入了许多新的Web标准技术去开发组件,比如 Web Component, Templates, shadow DOM,并且支持ECMAScript 6及以上版本中可用的新语言.作为Aura的替代品,LWC组件能与Aura组件共存，交互，共通构建Lightning应用。</p>
+<h2 id="LWC诞生背景"><a href="#LWC诞生背景" class="headerlink" title="LWC诞生背景"></a>LWC诞生背景</h2><p>2014年，Salesforce就推出了Lightning Component和Aura框架，开发者可以在平台上构建组件化的应用。虽然当时前端技术还没有迎来爆发性的增长，但通过aura bundle生成的组件，虽然在服务端渲染，但性能还是可圈可点的。借助aura:event也可以完成组件间的消息传递。<br>在这期间很多互联网厂商也推出了自己的开源UI框架：React,Angular,vue…三驾马车，也是通过组件化的方式来构建大型的web应用。此时不同的框架就像是不同的语言，每个框架都有自己的一套体系。虽然都是基于js的框架，不同框架的语法和数据交互方式却各不相同，这间接的提高了前端开发人员的学习成本。<br>在这种神仙打架的背景下，web标准化的需求更为迫切。在<a href="https://www.w3.org/"> <strong>W3C</strong></a>&#x2F;<a href="https://whatwg.org/"> <strong>WHATWG</strong></a>&#x2F;和Salesforce成员之一的ECMAScript技术委员会(TC39)推动下，过去几年，我们见证了web标准前所未有的发展速度，过去五年制定的标准包括:</p>
+<ul>
+<li>ECMAScript <a href="https://www.ecma-international.org/ecma-262/6.0/"> <strong>2015 (6)</strong></a>, <a href="https://www.ecma-international.org/ecma-262/7.0/%22"> <strong>2015 (6)</strong></a> ,<a href="https://www.ecma-international.org/ecma-262/6.0/"> <strong>2016 (7)</strong></a>, <a href="https://www.ecma-international.org/ecma-262/8.0/index.html"> <strong>2017 (8)</strong></a>,<a href="https://www.ecma-international.org/ecma-262/9.0/index.html%22"> <strong>2018 (9)</strong></a>, </li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components"> <strong>Web components</strong></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements"> <strong>Custom elements</strong></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots"> <strong>Templates and slots</strong></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM"><strong>Shadow DOM</strong></a></li>
+</ul>
+<h2 id="Web-Components-更多标准，更少框架"><a href="#Web-Components-更多标准，更少框架" class="headerlink" title="Web Components- 更多标准，更少框架"></a>Web Components- 更多标准，更少框架</h2><p><img src="/2021/12/25/Salesforce_FrontendFrameworksIII/LWC_00000.PNG" alt="LWC_00000.png"></p>
+<p>上图是官方给出的LWC组件的部分特性,黄色部分的Web Standards，说白了就是浏览器原生支持的组件，比如Custom elements（自定义元素），Shadow DOM（影子DOM）都是 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components"> <strong>Web Components API</strong></a>的一部分。相比框架本身，不用加载任何外部模块，代码量小，浏览器直接就可以编译,渲染DOM。  </p>
+<p>利用Web Component API能开发浏览器可以直接编译，渲染的原生组件，创建的组件不用加载任何外部模块，而且具备更好的性能，因为组件的核心特性是在web引擎中本地实现的，而不是在框架抽象的JavaScript中实现的。  </p>
+<p>开发人员只要掌握了Web Componnet API,就具备了开发LWC组件的能力。另外学习Web Component的过程会让我们对Lwc中使用的Web技术有更深刻的体会。  </p>
+<p>推荐两个学习的地方：</p>
+<ol>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Web_Components#%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BD%BF%E7%94%A8"> <strong>MDN-Web Components</strong></a> : MDN Web Docs 是一个提供 Web 技术和促进 Web 技术软件的不断发展的学习平台，在这里能获取到最新的WEB标准的API，比较权威。</li>
+<li>阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2019/08/web_components.html"><strong>Web Components 入门实例教程</strong></a></li>
+</ol>
+<h2 id="LWC-Open-Source"><a href="#LWC-Open-Source" class="headerlink" title="LWC Open Source"></a>LWC Open Source</h2><p>LWC与其他Salesforce UI框架的一个重要区别就是它可以脱离Salesforce平台使用。比如在heroku中你也可以配合其他的后端语言去构建Web应用。</p>
+<p>Git的<a href="https://github.com/salesforce/lwc"> <strong>open-source repository</strong></a>中提供的LWC源码(LWC编译器和引擎代码)领先于Salesforce平台上提供的代码。LWC的大部分功能最终会在Salesforce平台上发布。</p>
+<ul>
+<li>lwc.dev中提供的一些特性是不能用于在Salesforce平台上构建的Lwc组件的。<a href="https://lwc.dev/"> <strong>Lwc dev文档</strong></a>中对这些特别的地方会有相应的说明。</li>
+<li>在Lightning Platform上构建Lwc组件和在平台外构建Lwc的区别请参考<a href="https://developer.salesforce.com/blogs/2019/06/differences-between-building-lightning-web-components-on-lightning-platform-and-open-source"> <strong>LWC: OpenSource VS Lightning Platform</strong></a></li>
+<li>通过npm ‘create-lwc-app’ 可以在本地创建Lwc项目</li>
+<li>Lwc提供了一个线上编译环境<a href="https://webcomponents.dev/create/lwc"> <strong>Online playground</strong></a>,我们可以可以在上面编译调试代码。</li>
+</ul>
+<h2 id="为什么要引入LWC"><a href="#为什么要引入LWC" class="headerlink" title="为什么要引入LWC?"></a>为什么要引入LWC?</h2><p>虽然使用Aura框架就可以完成组件化的开发需求,开发难度其实也不复杂(Aura还是很好上手的),而且作为终端用户在使用这两种组件时体验还差不多，那为什么需要Lwc呢？</p>
+<p><img src="/2021/12/25/Salesforce_FrontendFrameworksIII/LWC_00001.PNG" alt="LWC_00001.png"></p>
+<h3 id="标准化开发-Standard-Development"><a href="#标准化开发-Standard-Development" class="headerlink" title="标准化开发(Standard Development)"></a>标准化开发(Standard Development)</h3><p>  组件化开发目前是前端主流的开发方式，按照这种设计思想做成的画面在代码复用,提高应用扩展性方面有着无可比拟的优势。现在流行的React，Vue，包括Salsforce自己的Aura框架都是组件化的框架。但是呢, 他们都不是浏览器原生支持的。比如，浏览器不支持React的jsx语法，不支持js模块化写法，如果不依靠框架自身去解析，编译，代码是无法在浏览器中执行的。Aura也一样，脱离了salesforce的服务器是玩不转的，不管是<a href="aura:component">aura:component</a>或者是组件中的js代码，都首先会在salesforce上编译为浏览器能识别的的html,js文件，浏览器才会去编译。</p>
+<p>  <strong>web component</strong>是web原生提供的封装组件的方式，是通过浏览器引擎提供api接口直接进行操作的。web components通过一种标准化的非侵入的方式封装一个组件，可以将HTML 结构、CSS 样式和javascript代码隐藏起来，并与页面上的其它代码相隔离。<br>  比起aura, lwc利用web component实现的组件是在浏览器上直接渲染，而aura的cmp，js controller其实是在服务端渲染生成html后返回给客户端的。所以呢，Lwc框架在本地开发也玩得转！</p>
+<h3 id="性能更佳-Better-execution-x2F-Performance"><a href="#性能更佳-Better-execution-x2F-Performance" class="headerlink" title="性能更佳(Better execution&#x2F;Performance)"></a>性能更佳(Better execution&#x2F;Performance)</h3><p>LWC得到了浏览器的原生支持,所以组件在执行时需要执行的代码相比较aura会更少，这意味着它加载会更快。使用浏览器基本都支持的自定义的事件CustomEvent()去完成组件间的信息传递，显然会比aura:event传参有更高的效率。</p>
+<h3 id="更好的安全性-Better-security-features"><a href="#更好的安全性-Better-security-features" class="headerlink" title="更好的安全性(Better security features)"></a>更好的安全性(Better security features)</h3><p>利用Web Component的一些特性，比如shadow Dom, 加强了组件对局部视图封装能力。CSS, DOM,JS以及Event都被封装在一个作用域下，这更契合组件化开发的实质。</p>
+<ul>
+<li><p>强制使用Strict Mode<br>Lightning Locker Service会隐式启用JavaScript严格模式。您不需要在代码中指定” use strict”。JavaScript严格模式使代码更加安全、健壮和可支持。</p>
+</li>
+<li><p><a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.security_locker_global_access">Secure Wrappers</a><br>Lightning Locker将一部分全局对象做了封装,使访问DOM更安全。</p>
+<ul>
+<li>window → SecureWindow</li>
+<li>document → SecureDocument</li>
+<li>object → SecureObject</li>
+<li>element → SecureObject</li>
+<li>LightningElement → SecureLightningElement</li>
+<li>template → SecureTemplate</li>
+</ul>
+</li>
+<li><p>控制组件间的DOM访问<br>组件只能访问它创建的DOM元素。Lightning web组件中<strong>不能使用window或document全局对象</strong>就是这个原因。<br>比如, html api中会使用document.querySelector(“#demo”)去查找某个元素，但是在开发lwc时只能使用this.template.querySelector(“#demo”)去获取元素。</p>
+</li>
+<li><p>限制访问部分Salesforce全局变量<br>Lightning Locker阻止了对一些全局JavaScript对象的访问,这些变量要么已被弃用，要么会导致跨框架依赖。  </p>
+<ul>
+<li>$A</li>
+<li>Aura</li>
+<li>Sfdc</li>
+<li>sforce</li>
+</ul>
+</li>
+<li><p>内容安全策略(Content Security Policy)<br>Lightning Component框架使用内容安全策略(CSP) (Content Security Policy)来控制页面上可加载的内容来源，CSP是W3C标准。CSP有助于防止跨站脚本(XSS)和其他代码注入攻击。所有CSP规则都在页面级工作，并适用于所有组件和库。</p>
+</li>
+<li><p>从Apex调用API<br>对于Apex callout，您的代码处理身份验证，可能不太安全，对于OAuth实现来说尤其复杂。Salesforce管理所有指定命名凭据作为调用端点的调用的身份验证，这样您就不必这样做了。对于命名凭据中定义的站点，还可以跳过远程站点设置，否则到外部站点的调出将需要远程站点设置。</p>
+</li>
+</ul>
+<p>更详尽的Lwc安全机制的资料请参考官方文档的<a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.security_intro">Develop Secure Code</a>  </p>
+<h3 id="ECMAScript-ES6"><a href="#ECMAScript-ES6" class="headerlink" title="ECMAScript ES6+"></a>ECMAScript ES6+</h3><p>  Lwc对ES6和ES7有了更好的支持，而aura只支持ES5。在lwc中我们可以使用箭头函数，Classes,Modules等一些js新的语法。<br>  下边列出了LWC框架支持的js内容：</p>
+<ul>
+<li>ECMAScript  <ul>
+<li>ES6 (ECMAScript 2015)</li>
+<li>ES7 (ECMAScript 2016)</li>
+<li>ES8 (ECMAScript 2017)—excluding Shared Memory and Atomics</li>
+<li>ES9 (ECMAScript 2018)—including only Object Spread Properties (not Object Rest Properties)</li>
+</ul>
+</li>
+<li>Templates and slots</li>
+<li>Decorators</li>
+<li>Modules</li>
+<li>Promises</li>
+<li>Classes</li>
+<li>Modules</li>
+<li>Promises</li>
+<li>Decorators</li>
+<li>Web Components</li>
+<li>Custom Elements</li>
+<li>Shadow DOM</li>
+</ul>
+<h3 id="单向数据绑定"><a href="#单向数据绑定" class="headerlink" title="单向数据绑定"></a>单向数据绑定</h3><p>Aura使用的双向数据绑定有时会出现各种问题，lwc使用单向数据绑定。单向数据流动可以跟踪，流动单一，追查问题的时候可以跟快捷。</p>
+<h3 id="可复用的Js"><a href="#可复用的Js" class="headerlink" title="可复用的Js"></a>可复用的Js</h3><p>在Lwc中可以编写只有js文件的组件作为共通js文件被其他组件import。</p>
+<h3 id="可以编写Js测试类"><a href="#可以编写Js测试类" class="headerlink" title="可以编写Js测试类"></a>可以编写Js测试类</h3><p>我们可以使用Jest为所有的Lightning web组件编写单元测试来测试js代码。</p>
+<h2 id="支持LWC的浏览器"><a href="#支持LWC的浏览器" class="headerlink" title="支持LWC的浏览器"></a>支持LWC的浏览器</h2><table>
+<thead>
+<tr>
+<th>Sno.</th>
+<th>Browser</th>
+<th>Version</th>
+<th>Limitations</th>
+<th>Links</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Microsoft Internet Explorer</td>
+<td>IE 11 &amp; above</td>
+<td>Components work in compatibility mode, so performance suffers.</td>
+<td><a href="https://help.salesforce.com/articleView?id=getstart_browser_considerations_ie.htm&type=5#getstart_browser_considerations_ie">参考链接</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Microsoft Edge</td>
+<td>15+</td>
+<td>Developer Console doesn’t support Microsoft Edge</td>
+<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_edge.htm&type=5">参考链接</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Google Chrome</td>
+<td>59+</td>
+<td>NA</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Mozilla Firefox</td>
+<td>54+</td>
+<td>currently doesn’t support Private Browsing.</td>
+<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_firefox.htm&type=5">参考链接</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Apple Safari</td>
+<td>12.x+</td>
+<td>Salesforce currently doesn’t support Analytics with Apple Safari.</td>
+<td><a href="https://help.salesforce.com/s/articleView?id=sf.getstart_browser_considerations_safari.htm&type=5">参考链接</a></td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce前端框架</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Salesforce前端框架</tag>
+      </tags>
+  </entry>
+</search>

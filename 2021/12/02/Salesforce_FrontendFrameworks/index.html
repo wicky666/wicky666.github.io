@@ -1,0 +1,366 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>深入Salsforce前端框架(一) | 云中漫步</title><meta name="keywords" content="Salesforce,Lightning,Salesforce前端框架"><meta name="author" content="Wick Wang"><meta name="copyright" content="Wick Wang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="梳理Salesforce框架的特点, 介绍Visualforce Page框架的核心">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入Salsforce前端框架(一)">
+<meta property="og:url" content="https://wicky666.github.io/2021/12/02/Salesforce_FrontendFrameworks/index.html">
+<meta property="og:site_name" content="云中漫步">
+<meta property="og:description" content="梳理Salesforce框架的特点, 介绍Visualforce Page框架的核心">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wicky666.github.io/img/salesforce_article.jpg">
+<meta property="article:published_time" content="2021-12-02T12:17:33.000Z">
+<meta property="article:modified_time" content="2022-02-27T15:26:30.078Z">
+<meta property="article:author" content="Wick Wang">
+<meta property="article:tag" content="Salesforce">
+<meta property="article:tag" content="Lightning">
+<meta property="article:tag" content="Salesforce前端框架">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wicky666.github.io/img/salesforce_article.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://wicky666.github.io/2021/12/02/Salesforce_FrontendFrameworks/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fb818fe9c8e5ef98d528d61e948b872e";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":false,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深入Salsforce前端框架(一)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-27 23:26:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">#toggle-sidebar {bottom: 80px}</style><style type="text/css">#toggle-sidebar {left:100px}</style><meta name="generator" content="Hexo 5.4.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/./img/avatar_programmer.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/../img/salesforce_article.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">云中漫步</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">深入Salsforce前端框架(一)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-02T12:17:33.000Z" title="发表于 2021-12-02 20:17:33">2021-12-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-02-27T15:26:30.078Z" title="更新于 2022-02-27 23:26:30">2022-02-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/">Salesforce</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/Salesforce%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/">Salesforce前端框架</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="深入Salsforce前端框架(一)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="深入Salsforce前端框架"><a href="#深入Salsforce前端框架" class="headerlink" title="深入Salsforce前端框架"></a>深入Salsforce前端框架</h1><p>Salesforce的生态系统允许开发者在Force.com平台上进行二次开发,使用Salesforce提供的丰富API接口构建满足业务的”应用程序”。在满足业务各种脑洞需求的同时,<strong>强大的定制化能力</strong>也赋予了产品持续的生命力。近十年随着前端技术的发展,很多新项目都开始了MVVM的转型,Salesforce也在不断推出符合最新web标准的新框架。</p>
+<ul>
+<li><p>s-control<br>s-control是SFDC最早的前端框架,画面就是一个单纯的html,开发者还需要在js中调用API来实现DML操作,无论是安全性还是用户体验都很不友好。s-control也无情的被Visualforce所取代。2010年3月之后，从未创建s-control的组织，以及新的组织，将不被允许创建它们。现有的s-control将不受影响，仍然可以编辑。建议将s-controls移动到Visualforce。<br>你需要创建一个custom button或custom link来显示s-control画面。或者将s-control放入web tab中让用户使用。</p>
+</li>
+<li><p>Visualforce Page<br>Visualforce是s-control的升级版框架,salesforce classical时代所有的自定义UI画面都要利用VF去开发,Vf可以构建较为复杂的UI界面,。</p>
+<ul>
+<li>Visaualforce提供了很多内置的语义化标签来帮助我们快速的构建sfdc风格的画面。</li>
+<li>多种封装后的Ajax方法使前台和后台的交互多元化,比如在VF page中apex:commandButton等标签绑定action，使用actionFunction,使用ajax toolkit，使用VF Remoting或者使用action:support都可以实现和后台的交互。</li>
+<li>Visualforce还可以与Salesforce系统中的标准功能相结合,对标准功能进行扩展或重写。比如,用vf来重写Account详细画面的view button。</li>
+</ul>
+</li>
+<li><p>Lightning Component Framework<br>Spring’19(API version 45.0)开始, Salesforce正式启用Lightning experience,在前端框架方面也做了比较大的转型,从传统页面应用架构(Visualforce)过度到目前主流的单页面应用。Salesforce为Lightning组件框架引入了两种不同的编程模型(Lightning Aura components和Lightning Web Components)为移动端和桌面设备开发spa应用。组件化成为了salesforce构建app的趋势,将组件配置Lightning App Builder和Experience Builder中可以通过复用组件节省开发成本。同时,Aura组件和LWC组件是可以共存和交互的,salesforce提供的很多功能对于这两种框都提供了API.</p>
+<ul>
+<li><p>Lightning aura Component<br>Lightning aura Components是基于开源的aura.js(<a target="_blank" rel="noopener" href="https://github.com/aurajs/aura">https://github.com/aurajs/aura</a>)构建的框架。用于在Lightning Platform上构建动态，响应式用户界面的单页应用程序。它在客户端使用JavaScript，在服务器端使用Apex,事件驱动是整个框架的核心。</p>
+</li>
+<li><p>Lightning Web Component<br>Lightning Web Component是salesforce基于最新Web标准构建的新型轻量级框架,未来很长一段时间都会是构建Lightning Platform自定义画面的首选。</p>
+<ul>
+<li>Lightning Web Component使用了HTML5的最新特性,比如Custom Elements,template, shadow DOM,装饰器 ,引入了ECMAScript 6中很多新的特性。比起Aura组件,lwc和Vue, React这些主流前端框架的特性都极为接近，是一款味道纯正的单页面框架。</li>
+<li>Lwc是浏览器端渲染的框架,所以我们不仅能在Salesforce Platform中使用它,也可以在其他平台中引入Lwc(<a target="_blank" rel="noopener" href="https://lwc.dev/guide/introduction">https://lwc.dev/guide/introduction</a>)。我们可以用Webpack,TypeScript和Babel来build应用,并在Heroku、goole或其他任何地方运行它。Aura虽然也是开源框架, 但只能在Salesforce platform中使用,因为Aura组件是在Salesforce服务端渲染的。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="我所亲见的Salesforce前端技术变革"><a href="#我所亲见的Salesforce前端技术变革" class="headerlink" title="我所亲见的Salesforce前端技术变革"></a>我所亲见的Salesforce前端技术变革</h2><blockquote>
+<p>“Atwood 定律：任何能够用 JavaScript 编写的应用程序，最终必将用 JavaScript 编写。”<br>-Jeff Atwood</p>
+</blockquote>
+<p>  过去的十年,是前端技术野蛮生长的年代,Salesforce花费了很多时间去完善平台的用户体验。从VF到Aura再到Lwc,从传统Web应用到单页应用程序(SPA),每一次Release,每一次技术细节的提高,不仅给开发者带来了很多新的Web概念,用户体验也不断提升。</p>
+<h3 id="传统Web应用和单页应用-SPA"><a href="#传统Web应用和单页应用-SPA" class="headerlink" title="传统Web应用和单页应用(SPA)"></a>传统Web应用和单页应用(SPA)</h3><p>  目前有两种通用方法来创建Web应用: 在服务器上执行大部分应用程序逻辑的传统Web应用,以及在Web浏览器中执行大部分用户界面逻辑的单页应用程序(SPA)。</p>
+<ul>
+<li><p><strong>传统Web应用</strong><br>  每一次页面的跳转,后台服务器都会返回一个新的html文件去加载。每次加载都会刷新页面所有资源,每个公共资源(js、css等)都需要选择性重新加载。</p>
+<p>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-1.PNG" alt="Lightning_0-1.PNG"><br>  优点:</p>
+<ul>
+<li>首屏加载时间快:  访问页面时，服务器返回一个HTML文件,浏览器解析HTML文件,将DOM节点绘制到浏览器上,这个过程中,只经历了一次HTTP请求,所以页面加载速度比较快。</li>
+<li>SEO效果好:  搜索引擎只识别HTML内容,传统页面的开发形式是将展示内容放在HTML中,就被搜索引擎的爬虫抓取并分析。而我们每个页面所有的内容都放在html中，所以这种多页应用SEO排名效果好。</li>
+</ul>
+</li>
+<li><p><strong>单页面(SPA)应用</strong><br> SPA单页应用从始至终只有一个页面,不会重新加载整个页面。仅在 Web 页面初始化时加载相应的 HTML,JavaScript和CSS。一旦页面加载完成,不会因为用户的操作而进行页面的重新加载或跳转。而是利用<strong>路由机制</strong>实现 HTML 内容的变换，UI 与用户的交互，避免页面的重新加载。说得直白点就是实现了前端和后端的彻底解耦。后端只需要提供数据接口,前端只需要调用接口，无需关心后端的具体实现。</p>
+<p>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-2.PNG" alt="Lightning_0-2.PNG"></p>
+<blockquote>
+<p>HTML路由机制学习: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/lguow/p/10921564.html">https://www.cnblogs.com/lguow/p/10921564.html</a></p>
+</blockquote>
+<p>  优点:</p>
+<ul>
+<li><p>无缝切换 移动端体验更好:  整个过程不涉及到页面的重新刷新,页面每次切换跳转时，并不需要处理html文件的请求，这样就节约了很多HTTP发送时延，所以我们在切换页面的时候速度很快。</p>
+</li>
+<li><p>公共资源只加载一次:  一些工具函数，只需要在入口页加载一次，全局就能使用。而传统多页面在没有实现模块化的情况下，每个页面都是需要加载公共资源。</p>
+<p>缺点：</p>
+</li>
+<li><p>首屏加载时间慢:首屏时需要请求一次html，同时还要加载所有项目所需的静态资源脚本,相对于多页面应用，首屏时间慢。</p>
+</li>
+<li><p>不利于SEO: 因为搜索引擎只认识html里的内容，不认识js渲染生成的内容，搜索引擎不识别，会导致单页应用做出来的网页在搜索引擎上的排名差。</p>
+</li>
+<li><p>兼容性问题: 通过JS脚本去渲染HTML页面,对JS的语法要求还是比较高的。如果浏览器不识别某些ES6的语法,就会发生页面的兼容性问题。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Salesforce-Classic-vs-Lightning"><a href="#Salesforce-Classic-vs-Lightning" class="headerlink" title="Salesforce Classic vs Lightning"></a><strong>Salesforce Classic vs Lightning</strong></h3><ul>
+<li><p>Classic<br>  Salesforce Classic中,画面是传统Web多页面应用。所以当加载页面时,只有初始的HTML加载。当用户单击一个Tab、Link、或者重新加载页面时，客户机会请求SFDC服务器去加载新的HTML。基本上,每次发出post请求时,都会返回新的HTML让浏览器加载。<br>  在下图中，可以看到在断网状态下,当我们在classical模式下切换页面时,因为网络中断导致http请求失败,新的HTML并不会被加载。<br>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-3.PNG" alt="Lightning_0-3.PNG"></p>
+</li>
+<li><p>Lightning<br>  在lightning中，所有需要的HTML和静态资源都在初始化页面时加载的,这也是为什么我们在切换到Lightning mode下会感觉画面第一次加载时会感觉很慢。在一次性加载所需资源后,为了从Salesforce获取指定的数据,浏览器对服务器发送ajax请求(创建XMLHttpReq对象)，只是为了获取JSON数据。不需要一次又一次地加载HTML。<br>  在下图中,在断网状态下,客户端无法访问服务器时,画面并不会奔溃,只是会弹出一个错误消息,Contact Tab的所有资源都已经被加载。<br>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-4.PNG" alt="Lightning_0-4.PNG"></p>
+</li>
+</ul>
+<h3 id="Salesforce的MVC架构模式"><a href="#Salesforce的MVC架构模式" class="headerlink" title="Salesforce的MVC架构模式"></a>Salesforce的MVC架构模式</h3><p>  Model-View-Controller(MVC)是一种常见的软件架构模式,把软件系统分为三个基本的部分:模型（数据模型）,视图（View）,和控制器（Controller）。在Salesforce platform中,无论你采购的是Sales cloud, Community Cloud还是Service Cloud,都需要了解产品之下的数据,业务逻辑,画面展示这三者之间的联系。<br>  <img src="/2021/12/02/Salesforce_FrontendFrameworks/Lightning_0-5.PNG" alt="Lightning_0-5.PNG"></p>
+<p>  Model: 在Salesforce platform中数据模型层是你要访问的各种Object对象。它由标准的Object(Account,Contact…)和自定义Object组成,Object的数据其实是存放在Oracle DB中。<br>  View: 视图层负责数据的展示和与用户的UI交互。在Salesforce中,visualforce页面,pagelayout和Tab都可以看作是View层。<br>  Controller: Controller是实际的业务逻辑层。Workflow、Apex trigger和Apex controller都可以看作是控制层的一部分。</p>
+<h3 id="传统Web页面的代表-Visualforce-Page"><a href="#传统Web页面的代表-Visualforce-Page" class="headerlink" title="传统Web页面的代表: Visualforce Page"></a>传统Web页面的代表: Visualforce Page</h3><p>  通过上面的介绍,我们大概已经知道了VF是传统Web多页面应用。并且在Salesforce的MVC架构中扮演View层,负责数据的展示和一些UI交互。<br>  哪些场景下我们可以考虑开发VF画面呢？</p>
+<ul>
+<li><p>创建email templates</p>
+</li>
+<li><p>开发 mobile&#x2F;pc端的UI画面，然后放在Web Tab中展示给终端用户</p>
+</li>
+<li><p>将Salesforce中的数据展示未PDF</p>
+</li>
+<li><p>需要自定义画面来嵌入standard page layouts</p>
+</li>
+<li><p>覆盖标准的Salesforce page</p>
+<p>Visualforce Page的主要构成:  </p>
+</li>
+<li><p>Visualforce Markup: Visualforce由一系列XML标记组成,每种内置标签都封装了许多不同的属性使我们可以轻松构建Classical画风的页面<br><img src="/2021/12/02/Salesforce_FrontendFrameworks/VF_0-1.PNG" alt="VF_0-1.PNG"></p>
+</li>
+<li><p>Visualforce Controller: visualforce控制器是用Apex编程语言编写的,用来处理业务逻辑和与DB的交互。</p>
+</li>
+</ul>
+<h4 id="谈谈我的认识"><a href="#谈谈我的认识" class="headerlink" title="谈谈我的认识"></a>谈谈我的认识</h4><ul>
+<li><p>VF作为一款多页面应用,因为引入了Ajax,其实用户体验还算不错,在VF种也封装了多种Ajax方法来实现实现异步交互。</p>
+</li>
+<li><p>VF page可以方便的转化为HTML5画面,这给前端的展示部分带来了无限的可能,尤其对于Mobile端。我们可以引入很多流行的第三方框架,比如引入Angular.js 将你的应用构建为SPA应用。引入响应式的CSS框架(Bootstrap…)来实现页面的多端展示。和Lightning 框架一对比,VF其实有着更强大的扩展性,对开发者的前端技能也要求更为苛刻。</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">apex:page</span> <span class="attr">docType</span>=<span class="string">&quot;html-5.0&quot;</span> <span class="attr">sidebar</span>=<span class="string">&quot;false&quot;</span> <span class="attr">shhowHeader</span>=<span class="string">&quot;false&quot;</span>  <span class="attr">standardStylesheets</span>=<span class="string">&quot;false&quot;</span> <span class="attr">cache</span>=<span class="string">&quot;true&quot;</span> <span class="attr">controller</span>=<span class="string">&quot;MyController&quot;</span> &gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>足够多的内置标签,只要掌握了其中一部分核心标签的用法就可以很快的上手开发。</p>
+</li>
+<li><p>在我做过的很多Classical项目中,VF中都有大量低质量的js代码导致画面的维护性很差。画面中的ViewState也时常会有超限的风险。</p>
+</li>
+</ul>
+<h4 id="谈谈我的建议"><a href="#谈谈我的建议" class="headerlink" title="谈谈我的建议"></a>谈谈我的建议</h4><ul>
+<li>JavaScript层面上,将核心的方法都封装成js文件引入静态资源,尽量减少画面中定义很多重复的js方法。</li>
+<li>因为有些浏览器还不支持HTML5的Selector选择器,可以使用jQuery框架来简化链式操作的难度。</li>
+<li>一开始构建项目时就考虑到画面的呈现方式,是否需要引入响应式的CSS框架去做页面布局。</li>
+</ul>
+<h3 id="前端组件化思想"><a href="#前端组件化思想" class="headerlink" title="前端组件化思想"></a>前端组件化思想</h3><p>  从Salesforce在2014年发布Lightning Experience以来,web标准也机缘巧合的迎来了巨大的变革。这一演变受到了几个知名组织的主导，包括万维网联盟(W3C)和ECMA国际技术委员会39 (TC39),Salesforce也在引领web标准方面发挥了关键作用,Salesforce会定期与主要浏览器供应商会面,适时调整框架侧重的优先级和方向。</p>
+<p>  在了解Lightning Component框架前,我觉得”组件化”是逃不过的话题。Salesforce除了考虑页面的安全性外,让你的页面作为组件可以任意配置在平台中任何需要的地方,让Admin无需写代码,通过Lightning App Builder或者Community Builder就能构建出酷炫的画面,也是设计者最为关心的。那么到底什么是组件化呢？</p>
+<h4 id="什么是前端组件化组件化"><a href="#什么是前端组件化组件化" class="headerlink" title="什么是前端组件化组件化?"></a>什么是前端组件化组件化?</h4><p>  如果把手机看作一个画面,你想实现某个功能需要去下载相应的app,这其实就是组件化思想,这里的app就像是画面上的每个组件。整个页面都由组件组成而不是单纯的在一个页面上写html和css,开发者可以随意互换各个组件的位置。</p>
+<p>  在很多Visualforce Page中大家肯定都遇到过,将一个页面的几百行,甚至上千行的代码逻辑写在一个 js 文件中。通常这种代码都很难读下去,更别说要维护代码和添加功能了,因为你不知道改动一个地方,会不会出现意想不到的bug。</p>
+<p>  前端组件化开发，就是将页面的某一部分独立出来，将这一部分的 数据层（M）、视图层（V）和 控制层（C）用黑盒的形式全部封装到一个组件内，暴露出一些开箱即用的函数和属性供外部组件调用。</p>
+<p>  一个前端组件，包含了 HTML、CSS、JavaScript,包含了组件的模板、样式和交互等内容，基本上涵盖了组件的所有的内容，外部只要按照组件设定的属性、函数及事件处理等进行调用即可，完全不用考虑组件的内部实现逻辑，对外部来说，组件是一个完全的黑盒。</p>
+<h4 id="为什么要有组件化"><a href="#为什么要有组件化" class="headerlink" title="为什么要有组件化?"></a>为什么要有组件化?</h4><ul>
+<li><p>在开发复杂画面时,如果一个画面中引入大量js代码,很容易发生共用js发生变量污染。</p>
+</li>
+<li><p>增加开发效率,增加代码的可维护性和扩展性</p>
+</li>
+<li><p>优秀的代码应该是高内聚,低耦合。耦合性的降低，提高了系统的伸展性，降低了开发的复杂度，提升开发效率，降低开发成本。</p>
+</li>
+</ul>
+<h3 id="前端MVC和MVVM"><a href="#前端MVC和MVVM" class="headerlink" title="前端MVC和MVVM"></a>前端MVC和MVVM</h3><ul>
+<li>前端MVC:</li>
+</ul>
+<p>view操作会触发controller去改变model,然后model再去改变视图.</p>
+<p>如果前端没有框架，只使用原生的html+js，MVC模式可以这样理解。将html看成view;js看成controller,负责处理用户与应用的交互,响应对view的操作（对事件的监听）,调用Model对数据进行操作，完成model与view的同步（根据model的改变，通过选择器对view进行操作）;将js的ajax当做Model，也就是数据层，通过ajax从服务器获取数据。<br><img src="/2021/12/02/Salesforce_FrontendFrameworks/Front_MVC.PNG" alt="VF_0-1.PNG"></p>
+<ul>
+<li>前端MVVM:<br>MVVM即Model-View-ViewModel，MVVM的设计原理是基于MVC的。ViewMode看作是Model和View的连接桥，View可以通过事件绑定Model，Model可以通过数据绑定View，通过ViewMode可以实现数据和视图的完全分离。<br>MVVM与MVC最大的区别就是：它实现了View和Model的自动同步，也就是当Model的属性改变时，我们不用再自己手动操作Dom元素，来改变View的显示,而是改变属性后该属性对应View层显示会自动改变。<br><img src="/2021/12/02/Salesforce_FrontendFrameworks/Front_MVVM.PNG" alt="VF_0-1.PNG"></li>
+</ul>
+<p>MVVM一个最显著的特征:数据双向绑定。Lwc没有这个,Lwc是一个单向数据流的库,用状态驱动视图。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Wick Wang</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wicky666.github.io/2021/12/02/Salesforce_FrontendFrameworks/">https://wicky666.github.io/2021/12/02/Salesforce_FrontendFrameworks/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wicky666.github.io" target="_blank">云中漫步</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Salesforce/">Salesforce</a><a class="post-meta__tags" href="/tags/Lightning/">Lightning</a><a class="post-meta__tags" href="/tags/Salesforce%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/">Salesforce前端框架</a></div><div class="post_share"><div class="social-share" data-image="/../img/salesforce_article.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2021/12/20/Salesforce_FrontendFrameworksII/"><img class="prev-cover" src="/../img/salesforce_article.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">深入Salsforce前端框架(二)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">Aura组件属性</div></div></a></div><div><a href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-13</div><div class="title">Aura组件结构</div></div></a></div><div><a href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">Aura组件ID</div></div></a></div><div><a href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">深入Salsforce前端框架(二)</div></div></a></div><div><a href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-25</div><div class="title">深入Salsforce前端框架(三)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/./img/avatar_programmer.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wick Wang</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wicky666"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wicky666" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/wicky_wang@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">网站功能持续更新中...</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5Salsforce%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">深入Salsforce前端框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E6%89%80%E4%BA%B2%E8%A7%81%E7%9A%84Salesforce%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E5%8F%98%E9%9D%A9"><span class="toc-number">1.1.</span> <span class="toc-text">我所亲见的Salesforce前端技术变革</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9FWeb%E5%BA%94%E7%94%A8%E5%92%8C%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8-SPA"><span class="toc-number">1.1.1.</span> <span class="toc-text">传统Web应用和单页应用(SPA)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Salesforce-Classic-vs-Lightning"><span class="toc-number">1.1.2.</span> <span class="toc-text">Salesforce Classic vs Lightning</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Salesforce%E7%9A%84MVC%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text">Salesforce的MVC架构模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9FWeb%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%BB%A3%E8%A1%A8-Visualforce-Page"><span class="toc-number">1.1.4.</span> <span class="toc-text">传统Web页面的代表: Visualforce Page</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B0%88%E8%B0%88%E6%88%91%E7%9A%84%E8%AE%A4%E8%AF%86"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">谈谈我的认识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B0%88%E8%B0%88%E6%88%91%E7%9A%84%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">谈谈我的建议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E7%BB%84%E4%BB%B6%E5%8C%96%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.5.</span> <span class="toc-text">前端组件化思想</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%89%8D%E7%AB%AF%E7%BB%84%E4%BB%B6%E5%8C%96%E7%BB%84%E4%BB%B6%E5%8C%96"><span class="toc-number">1.1.5.1.</span> <span class="toc-text">什么是前端组件化组件化?</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%8C%96"><span class="toc-number">1.1.5.2.</span> <span class="toc-text">为什么要有组件化?</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%AB%AFMVC%E5%92%8CMVVM"><span class="toc-number">1.1.6.</span> <span class="toc-text">前端MVC和MVVM</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件属性"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性">Aura组件属性</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件ID"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID">Aura组件ID</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件结构"/></a><div class="content"><a class="title" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构">Aura组件结构</a><time datetime="2022-01-13T02:00:00.000Z" title="发表于 2022-01-13 10:00:00">2022-01-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深入Salsforce前端框架(三)"/></a><div class="content"><a class="title" href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)">深入Salsforce前端框架(三)</a><time datetime="2021-12-25T15:04:33.000Z" title="发表于 2021-12-25 23:04:33">2021-12-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img src="/../img/salesforce_article.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深入Salsforce前端框架(二)"/></a><div class="content"><a class="title" href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)">深入Salsforce前端框架(二)</a><time datetime="2021-12-20T12:17:33.000Z" title="发表于 2021-12-20 20:17:33">2021-12-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wick Wang</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="6616884206" data-server="netease" data-type="playlist" data-theme="#FF4081" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="auto" data-autoplay="true" muted></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

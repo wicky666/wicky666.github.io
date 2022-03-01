@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aura组件ID | 云中漫步</title><meta name="keywords" content="Salesforce,Lightning,Aura基础"><meta name="author" content="Wick Wang"><meta name="copyright" content="Wick Wang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="详细介绍Aura组件的Id">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Aura组件ID">
+<meta property="og:url" content="https://wicky666.github.io/2022/02/26/Salesforce_AuraComponentId/index.html">
+<meta property="og:site_name" content="云中漫步">
+<meta property="og:description" content="详细介绍Aura组件的Id">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wicky666.github.io/img/SFDC_Fujishan.jpg">
+<meta property="article:published_time" content="2022-02-26T12:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-27T15:26:30.076Z">
+<meta property="article:author" content="Wick Wang">
+<meta property="article:tag" content="Salesforce">
+<meta property="article:tag" content="Lightning">
+<meta property="article:tag" content="Aura基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wicky666.github.io/img/SFDC_Fujishan.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://wicky666.github.io/2022/02/26/Salesforce_AuraComponentId/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fb818fe9c8e5ef98d528d61e948b872e";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":false,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Aura组件ID',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-27 23:26:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">#toggle-sidebar {bottom: 80px}</style><style type="text/css">#toggle-sidebar {left:100px}</style><meta name="generator" content="Hexo 5.4.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/./img/avatar_programmer.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/./img/SFDC_Fujishan.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">云中漫步</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Aura组件ID</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-02-27T15:26:30.076Z" title="更新于 2022-02-27 23:26:30">2022-02-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/">Salesforce</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/Salesforce-Aura/">Salesforce Aura</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Aura组件ID"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="组件的ID"><a href="#组件的ID" class="headerlink" title="组件的ID"></a>组件的ID</h1><p>HTML文档是一棵DOM树,树上有很多节点,每个节点一般都会有id属性,id属性具有唯一性,在同一个文档中不能重复,id是该节点的唯一标识。而Aura的组件元素中并不支持Id属性,它有两种类型的ID: Local ID和Global ID。local ID用于定位画面中的aura元素,global ID用于区分同一组件的多个实例,有时在调试代码时也会用到。</p>
+<h2 id="Local-IDs"><a href="#Local-IDs" class="headerlink" title="Local IDs"></a>Local IDs</h2><ul>
+<li>使用aura:id属性为组件创建的ID叫local ID,通过component.find(local ID)方法可以获取画面中的aura元素。</li>
+<li>local id 理论上是唯一的,但并不强制唯一。比如一组checkbox元素标签,可以给他们设置相同的local id。这时通过component.find(local ID)方法获取到的是元素列表。</li>
+<li>aura:id不支持表达式,只能用普通的字符串值作为元素的local id。</li>
+<li>只有Aura元素才可以定义aura:id,原生的html标签是没有该属性的。</li>
+</ul>
+<p>例:</p>
+<p>在controller.js中通过component.find(‘button1’) 可以获取到ui:button元素。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button1&quot;</span> <span class="attr">label</span>=<span class="string">&quot;button1&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>getLocalId():</strong> 此方法用于获取组件元素的local id, 通常用于通过事件获取事件的元素组件以后,获取元素组件的local id;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取指定元素的locaL Id</span></span><br><span class="line">component.find(<span class="string">&quot;buttonId&quot;</span>).getLocalId()</span><br><span class="line"><span class="comment">// 通过事件源元素的locaL Id</span></span><br><span class="line">event.getSource().getLocalId()</span><br></pre></td></tr></table></figure>
+
+<p>Eg:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:component</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button_local_id&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Get Local ID&quot;</span> <span class="attr">onClick</span>=<span class="string">&quot;&#123;!c.getInput&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ui:outputText</span> <span class="attr">aura:id</span>=<span class="string">&quot;outName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;text&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getInput: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, evt</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> localId = cmp.find(<span class="string">&#x27;button_local_id&#x27;</span>).getLocalId(); <span class="comment">// button_local_id</span></span><br><span class="line">    <span class="keyword">var</span> myText = cmp.find(<span class="string">&#x27;outName&#x27;</span>);</span><br><span class="line">    myText.set(<span class="string">&#x27;v.value&#x27;</span>, localId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Global-ID"><a href="#Global-ID" class="headerlink" title="Global ID"></a>Global ID</h2><p>Global ID是组件实例化时为组件生成的唯一Id。在组件实例化时生成意味着global Id是动态的Id,所以在每一次调用组件时获得的global Id都是不同的。global Id可以用来区分组件元素的多个实例或者用于debugging操作。</p>
+<p><img src="/2022/02/26/Salesforce_AuraComponentId/Aura_GlobalId.PNG" alt="Aura_GlobalId.PNG"></p>
+<p>可以使用global Id作为元素的前缀或后缀为HTML元素创建唯一的ID。</p>
+<p>例如  </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;&#123;!globalId + &#x27;_footer&#x27;&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用getGlobalId()方法在JavaScript中获取组件元素的GlobalId。</p>
+<blockquote>
+<p>var globalId &#x3D; cmp.getGlobalId();</p>
+</blockquote>
+<p>如果要根据元素的global Id去获取元素, 需要使用全局对象$A</p>
+<blockquote>
+<p>var cmp &#x3D; $A.getComponent(globalId)</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Retrieve Global Id from JavaScript:</span></span><br><span class="line">component.getGlobalId()</span><br><span class="line">component.find(“buttonId”).getGlobalId()</span><br><span class="line">event.getSource().getGlobalId() </span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Wick Wang</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wicky666.github.io/2022/02/26/Salesforce_AuraComponentId/">https://wicky666.github.io/2022/02/26/Salesforce_AuraComponentId/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wicky666.github.io" target="_blank">云中漫步</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Salesforce/">Salesforce</a><a class="post-meta__tags" href="/tags/Lightning/">Lightning</a><a class="post-meta__tags" href="/tags/Aura%E5%9F%BA%E7%A1%80/">Aura基础</a></div><div class="post_share"><div class="social-share" data-image="/./img/SFDC_Fujishan.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/26/Salesforce_AuraAttributes/"><img class="prev-cover" src="/./img/SFDC_Fujishan.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Aura组件属性</div></div></a></div><div class="next-post pull-right"><a href="/2022/01/13/Salesforce_AuraBasic/"><img class="next-cover" src="/./img/SFDC_Fujishan.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Aura组件结构</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">Aura组件属性</div></div></a></div><div><a href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-13</div><div class="title">Aura组件结构</div></div></a></div><div><a href="/2021/12/02/Salesforce_FrontendFrameworks/" title="深入Salsforce前端框架(一)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-02</div><div class="title">深入Salsforce前端框架(一)</div></div></a></div><div><a href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">深入Salsforce前端框架(二)</div></div></a></div><div><a href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-25</div><div class="title">深入Salsforce前端框架(三)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/./img/avatar_programmer.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wick Wang</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wicky666"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wicky666" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/wicky_wang@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">网站功能持续更新中...</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E7%9A%84ID"><span class="toc-number">1.</span> <span class="toc-text">组件的ID</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Local-IDs"><span class="toc-number">1.1.</span> <span class="toc-text">Local IDs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Global-ID"><span class="toc-number">1.2.</span> <span class="toc-text">Global ID</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件属性"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性">Aura组件属性</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件ID"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID">Aura组件ID</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件结构"/></a><div class="content"><a class="title" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构">Aura组件结构</a><time datetime="2022-01-13T02:00:00.000Z" title="发表于 2022-01-13 10:00:00">2022-01-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深入Salsforce前端框架(三)"/></a><div class="content"><a class="title" href="/2021/12/25/Salesforce_FrontendFrameworksIII/" title="深入Salsforce前端框架(三)">深入Salsforce前端框架(三)</a><time datetime="2021-12-25T15:04:33.000Z" title="发表于 2021-12-25 23:04:33">2021-12-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img src="/../img/salesforce_article.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深入Salsforce前端框架(二)"/></a><div class="content"><a class="title" href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)">深入Salsforce前端框架(二)</a><time datetime="2021-12-20T12:17:33.000Z" title="发表于 2021-12-20 20:17:33">2021-12-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wick Wang</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="6616884206" data-server="netease" data-type="playlist" data-theme="#FF4081" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="auto" data-autoplay="true" muted></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
