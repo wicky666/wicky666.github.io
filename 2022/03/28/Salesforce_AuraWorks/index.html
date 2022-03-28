@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aura组件的工作原理 | 云中漫步</title><meta name="keywords" content="Salesforce,Lightning,Aura基础"><meta name="author" content="Wick Wang"><meta name="copyright" content="Wick Wang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="介绍Aura组件的工作原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Aura组件的工作原理">
+<meta property="og:url" content="http://wicky666.com/2022/03/28/Salesforce_AuraWorks/index.html">
+<meta property="og:site_name" content="云中漫步">
+<meta property="og:description" content="介绍Aura组件的工作原理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://wicky666.com/img/SFDC_Fujishan.jpg">
+<meta property="article:published_time" content="2022-03-28T02:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-28T16:14:17.490Z">
+<meta property="article:author" content="Wick Wang">
+<meta property="article:tag" content="Salesforce">
+<meta property="article:tag" content="Lightning">
+<meta property="article:tag" content="Aura基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://wicky666.com/img/SFDC_Fujishan.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wicky666.com/2022/03/28/Salesforce_AuraWorks/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?fb818fe9c8e5ef98d528d61e948b872e";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":false,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Aura组件的工作原理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-29 00:14:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">#toggle-sidebar {bottom: 80px}</style><style type="text/css">#toggle-sidebar {left:100px}</style><meta name="generator" content="Hexo 5.4.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/./img/avatar_programmer.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/./img/SFDC_Fujishan.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">云中漫步</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 参考链接</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Aura组件的工作原理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-28T02:00:00.000Z" title="发表于 2022-03-28 10:00:00">2022-03-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-28T16:14:17.490Z" title="更新于 2022-03-29 00:14:17">2022-03-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/">Salesforce</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Salesforce/Salesforce-Aura/">Salesforce Aura</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Aura组件的工作原理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Aura组件的工作原理"><a href="#Aura组件的工作原理" class="headerlink" title="Aura组件的工作原理"></a>Aura组件的工作原理</h1><h2 id="Aura组件的交互方式"><a href="#Aura组件的交互方式" class="headerlink" title="Aura组件的交互方式"></a>Aura组件的交互方式</h2><p>掌握Aura组件客户端与服务器端通信时的工作步骤对于合理的构建组件非常有帮助。<br>下图会详细说明一个Lightning组件是如何在<code>客户端和服务端</code>之间进行工作的:</p>
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraWorks/AuraWork_0000.png" alt="AuraWork_0000.png"></p>
+<p>组件的component bundle是由’Component(.cmp) &#x2F; Controller js(.js) &#x2F; Helper js(.js)’<br>这三部分构成的。在构建组件时有时会很困惑controller.js和helper.js的职责所在，毕竟helper.js即使没有组件也不会报错。</p>
+<ol>
+<li><p>用户打开页面或者调用组件时，组件会被初始化。</p>
+</li>
+<li><p>组件初始化时，如果定义了init事件，那么首先init事件将会自动触发。页面初期用到的数据都需要在该事件内获取和设定。</p>
+</li>
+<li><p>当用户与页面发生交互时，比如点击按钮或者触发某个自定义事件，controller.js中定义的事件方法会被触发。</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 比如在controller.js中执行save方法</span></span><br><span class="line"><span class="attr">save</span>: <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>)</span>&#123;</span><br><span class="line">    helper.requestAccountData(component)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内置的component参数 &#x3D;&gt; 可以获得当前组件中的任意元素</li>
+<li>内置的event参数 &#x3D;&gt; 可以捕捉到事件源，获取事件源元素的各种属性</li>
+<li>内置的helper参数 &#x3D;&gt; 可以调用helper.js中的函数</li>
+</ul>
+</li>
+<li><p>在helper.js的函数中向服务端的apex设定请求参数,然后发出请求，</p>
+</li>
+<li><p>Apex controller中定义的@AuraEnabled声明的Apex方法被调用，返回页面需要的数据。</p>
+</li>
+<li><p>接收到返回结果后，js函数中创建的callback方法被执行来处理服务端的返回结果。</p>
+</li>
+<li><p>callback函数内将返回的数据set到aura:attribute中，页面重新渲染。</p>
+</li>
+<li><p>页面重新加载后，用户就能看到页面中显示的数据了。</p>
+</li>
+</ol>
+<p>当然，也可以把helper.js中请求后台apex的函数直接定义在controller.js中，直接从controller.js来处理后台返回的数据，但该模式不便<br>与维护，不推荐使用。</p>
+<h2 id="Value-Providers"><a href="#Value-Providers" class="headerlink" title="Value Providers"></a>Value Providers</h2><p><a target="_blank" rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.200.0.lightning.meta/lightning/expr_source.htm">https://developer.salesforce.com/docs/atlas.en-us.200.0.lightning.meta/lightning/expr_source.htm</a></p>
+<h2 id="aura组件请求服务端Apex"><a href="#aura组件请求服务端Apex" class="headerlink" title="aura组件请求服务端Apex"></a><a target="_blank" rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm">aura组件请求服务端Apex</a></h2><p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraWorks/AuraWork_0001.png" alt="AuraWork_0001.png"></p>
+<p>举一个非常简单的例子，将值从客户端传递到服务器端。在一个Lightning组件中，服务器端调用。</p>
+<ol>
+<li>页面和后台需要交互的数据保存在组件cmp文件的aura:attribute中。</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AuraMethodExample.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">description</span>=<span class="string">&quot;ApexMethodExample&quot;</span> <span class="attr">controller</span>=<span class="string">&quot;ApexControllerSample&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;countries&quot;</span> <span class="attr">type</span>=<span class="string">&quot;List&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;selectedCountry&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:handler</span> <span class="attr">name</span>=<span class="string">&quot;init&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!this&#125;&quot;</span> <span class="attr">action</span>=<span class="string">&quot;&#123;!c.loadCountries&#125;&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:select</span> <span class="attr">name</span>=<span class="string">&quot;colorId&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Select a Country:&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!v.selectedCountry&#125;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aura:iteration</span> <span class="attr">items</span>=<span class="string">&quot;&#123;!v.countries&#125;&quot;</span> <span class="attr">var</span>=<span class="string">&quot;option&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">option</span> <span class="attr">text</span>=<span class="string">&quot;&#123;!option&#125;&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!option&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">aura:iteration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">lightning:select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>客户端的JavaScript controller去调用Apex中的方法，传递参数。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AuraMethodExample.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">loadCountries</span>: <span class="function"><span class="keyword">function</span> (<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> action = component.get(<span class="string">&quot;c.getCountries&quot;</span>);</span><br><span class="line">        action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">var</span> state = response.getState();</span><br><span class="line">            <span class="keyword">if</span>(state == <span class="string">&#x27;SUCCESS&#x27;</span>) &#123;</span><br><span class="line">                component.set(<span class="string">&#x27;v.countries&#x27;</span>, response.getReturnValue());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">// A client-side action could cause multiple events, </span></span><br><span class="line">        <span class="comment">// which could trigger other events and </span></span><br><span class="line">        <span class="comment">// other server-side action calls.</span></span><br><span class="line">        <span class="comment">// $A.enqueueAction adds the server-side action to the queue.</span></span><br><span class="line">        $A.enqueueAction(action);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraWorks/AuraWork_0002.png" alt="AuraWork_0002.png"></p>
+<ol>
+<li>服务端的Apex controller需要接收，使用这些值去更改database中的数据。</li>
+</ol>
+<ul>
+<li>服务端被aura组件请求的apex方法:<ul>
+<li>该apex方法必须用@AuraEnabled声明。 </li>
+<li>该apex方法必须是静态的</li>
+<li>权限修饰符为 public 或者 global。</li>
+<li>确保Action方法名在组件中是唯一的。如果在js controller中定义的action名与其他函数名相同，可能会导致难以调试的问题。在调试模式下，框架会记录一个关于客户端和服务器端动作名称冲突的浏览器控制台警告。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> with sharing <span class="class"><span class="keyword">class</span> <span class="title">ApexControllerSample</span> </span>&#123;</span><br><span class="line">    <span class="comment">//Use @AuraEnabled to enable client- and server-side access to the method</span></span><br><span class="line">    <span class="meta">@AuraEnabled</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">getCountries</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; countries = <span class="keyword">new</span> List&lt;String&gt;();</span><br><span class="line">        countries.add(<span class="string">&#x27;China&#x27;</span>);</span><br><span class="line">        countries.add(<span class="string">&#x27;USA&#x27;</span>);</span><br><span class="line">        countries.add(<span class="string">&#x27;India&#x27;</span>);</span><br><span class="line">        <span class="keyword">return</span> countries;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="响应格式"><a href="#响应格式" class="headerlink" title="响应格式"></a>响应格式</h2><p>客户端调用服务端的Apex方法十分简单，Lightning已经对这块做了很不错的封装，但有时我们会因为参数类型的问题导致一些莫名奇妙的报错，下面就带大家看下具体的例子已经解决方法。</p>
+<h3 id="前台传参给服务端Apex的一些坑"><a href="#前台传参给服务端Apex的一些坑" class="headerlink" title="前台传参给服务端Apex的一些坑"></a>前台传参给服务端Apex的一些坑</h3><h3 id="Date"><a href="#Date" class="headerlink" title="Date"></a>Date</h3><p>不能在AuraEnabled方法中使用Date类型作为参数，否则接收的参数值总是null</p>
+<p>Component</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;myDate&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Date&quot;</span> <span class="attr">default</span>=<span class="string">&quot;1981–08–26&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(Date myDate)</span> </span>&#123;</span><br><span class="line">    System.debug(myDate); <span class="comment">// --&gt; null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解决方法：  </p>
+<p>将Date类型参数作为字符串传递，然后将其转换为date:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(String myDate)</span> </span>&#123;</span><br><span class="line">    Date myNewDate = Date.valueOf(myDate);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Apex Class</p>
+<p>如果你想用一种特定的格式传递数据，而不手动编写json对象，使用Apex class类型的aura:attribute会很方便。<br>例如，如果你想在某些时候使用SelectOption作为参数在前后台交互。</p>
+<p>Apex NewWrapperClass</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewWrapperClass</span> </span>&#123;</span><br><span class="line">  <span class="meta">@AuraEnabled</span></span><br><span class="line">  <span class="keyword">public</span> String label &#123;get; set;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Component</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;myApexClass&quot;</span> <span class="attr">type</span>=<span class="string">&quot;NewWrapperClass&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Client-side Controller</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">callServer : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myClass = component.get(<span class="string">&quot;v.myApexClass&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> action = component.get(<span class="string">&quot;c.setApexClassType&quot;</span>);</span><br><span class="line">        action.setParams(&#123; <span class="string">&quot;myApexClass&quot;</span> : myClass &#125;);</span><br><span class="line">        action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Do stuff</span></span><br><span class="line">        &#125;);</span><br><span class="line">    $A.enqueueAction(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Static <span class="keyword">void</span> <span class="title">setApexClassType</span><span class="params">(NewWrapperClass myApexClass)</span> </span>&#123;</span><br><span class="line">  System.debug(myApexClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码会发现，直接使用内部类Apex Class作为参数去接受客户端js传过来的参数，<br>会发生报错: <code>An internal server error has occurred.</code></p>
+<p>解决方法：<br>传递一个Apex类到AuraEnabled方法中的最好方法就是在客户端JS中stringify它，将其变为字符串。<br>然后在Apex反序列化(deserialize)。下面的代码将工作良好:</p>
+<p>Client-side Controller</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">callServer : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myClass = component.get(<span class="string">&quot;v.myApexClass&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> action = component.get(<span class="string">&quot;c.setApexClassType&quot;</span>);</span><br><span class="line">        action.setParams(&#123; <span class="string">&quot;myApexClass&quot;</span>: <span class="built_in">JSON</span>.stringify(myClass) &#125;);</span><br><span class="line">        action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Do stuff</span></span><br><span class="line">        &#125;);</span><br><span class="line">    $A.enqueueAction(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setApexClassType</span><span class="params">(String myApexClass)</span> </span>&#123;</span><br><span class="line">  NewWrapperClass nwc = (NewWrapperClass)JSON.deserialize(myApexClass, NewWrapperClass.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Set</p>
+<p>不能使用Set类型作为参数，如果你保存一个参数类型为Set的AuraEnabled方法，会看到以下错误消息，阻止你保存:</p>
+<p><code>Parameter type does not support AuraEnabled: Set&lt;String&gt;.</code></p>
+<p>所以，在作成前后交互的参数时，用<code>List 和 Map 代替Set</code></p>
+<p>Base64</p>
+<p>传递一个文件到你的Apex方法。不要忘记对文件进行编码&#x2F;解码:</p>
+<p>Client-side Controller</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> action = component.get(<span class="string">&quot;c.setFile&quot;</span>);</span><br><span class="line">action.setParams(&#123; <span class="attr">myBase64File</span> : <span class="built_in">encodeURIComponent</span>(base64File) &#125;);</span><br><span class="line">action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">   <span class="keyword">var</span> state = response.getState();</span><br><span class="line">  <span class="keyword">if</span> (state === “SUCCESS”) &#123;</span><br><span class="line">    <span class="comment">// Do stuff</span></span><br><span class="line">  &#125; </span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(state);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">$A.enqueueAction(action);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFile</span><span class="params">(String myBase64File)</span> </span>&#123;</span><br><span class="line">    String myFile = EncodingUtil.urlDecode(myBase64File, <span class="string">&#x27;UTF-8&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后台传参给前台的一些坑"><a href="#后台传参给前台的一些坑" class="headerlink" title="后台传参给前台的一些坑"></a>后台传参给前台的一些坑</h3><p>服务端处理完成后需要要给页面一个响应信息。经常会用到以下几种响应格式:</p>
+<ol>
+<li>返回Map&lt;String, Object&gt;格式</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, Object&gt; <span class="title">getCaseOptions</span><span class="params">(String xxxxx)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; resultMap = <span class="keyword">new</span> Map&lt;String, Object&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        resultMap.put(<span class="string">&#x27;searchResult&#x27;</span>, <span class="string">&#x27;Success&#x27;</span>);</span><br><span class="line">        Map&lt;String, String&gt; caseMap = <span class="keyword">new</span> Map&lt;String, String&gt;();</span><br><span class="line">        resultMap.put(<span class="string">&#x27;data&#x27;</span>, caseMap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        System.debug(<span class="string">&#x27;errorLine log : &#x27;</span> + e.getLineNumber());</span><br><span class="line">        resultMap.put(<span class="string">&#x27;searchResult&#x27;</span>, <span class="string">&#x27;Fail&#x27;</span>);</span><br><span class="line">        resultMap.put(<span class="string">&#x27;ErrorMsg&#x27;</span>, e.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> resultMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...callBack在此处省略...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> returnData = response.getReturnValue();</span><br><span class="line"><span class="keyword">if</span> (returnData[<span class="string">&quot;searchResult&quot;</span>] === <span class="string">&quot;Success&quot;</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> data = returnData[<span class="string">&quot;data&quot;</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>做一个 Aura Response Class去返回</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuraResponse</span> </span>&#123; </span><br><span class="line">    <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> String responseCode &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; messages &#123;get; set;&#125;</span><br><span class="line">     </span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; infoMessages &#123;get; set;&#125;</span><br><span class="line">     </span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; warnMessages &#123;get; set;&#125;</span><br><span class="line">     </span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; errorMessages &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Map&lt;String,String&gt; validateErrorMessages &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Object result &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Object userInfo &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Date executeDate = System.today();</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Datetime executeDatetime = System.now();</span><br><span class="line"></span><br><span class="line">     <span class="comment">/**</span></span><br><span class="line"><span class="comment">      * Constructor</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="title">AuraResponse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...callBack在此处省略...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Get the messages of RetunValue</span></span><br><span class="line"><span class="keyword">var</span> messages = response.getReturnValue().messages;</span><br><span class="line"><span class="comment">// Get the messages of RetunValue</span></span><br><span class="line"><span class="keyword">var</span> result = response.getReturnValue().result;</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Wick Wang</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://wicky666.com/2022/03/28/Salesforce_AuraWorks/">http://wicky666.com/2022/03/28/Salesforce_AuraWorks/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://wicky666.com" target="_blank">云中漫步</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Salesforce/">Salesforce</a><a class="post-meta__tags" href="/tags/Lightning/">Lightning</a><a class="post-meta__tags" href="/tags/Aura%E5%9F%BA%E7%A1%80/">Aura基础</a></div><div class="post_share"><div class="social-share" data-image="/./img/SFDC_Fujishan.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/28/Salesforce_AuraCmpLifeCycle/"><img class="prev-cover" src="/./img/SFDC_Fujishan.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Aura组件的生命周期</div></div></a></div><div class="next-post pull-right"><a href="/2022/02/26/Salesforce_AuraAttributes/"><img class="next-cover" src="/./img/SFDC_Fujishan.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Aura组件属性</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">Aura组件属性</div></div></a></div><div><a href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-13</div><div class="title">Aura组件结构</div></div></a></div><div><a href="/2022/03/28/Salesforce_AuraCmpLifeCycle/" title="Aura组件的生命周期"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-28</div><div class="title">Aura组件的生命周期</div></div></a></div><div><a href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img class="cover" src="/./img/SFDC_Fujishan.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">Aura组件ID</div></div></a></div><div><a href="/2021/12/02/Salesforce_FrontendFrameworks/" title="深入Salsforce前端框架(一)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-02</div><div class="title">深入Salsforce前端框架(一)</div></div></a></div><div><a href="/2021/12/20/Salesforce_FrontendFrameworksII/" title="深入Salsforce前端框架(二)"><img class="cover" src="/../img/salesforce_article.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">深入Salsforce前端框架(二)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/./img/avatar_programmer.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wick Wang</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wicky666"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/wicky666" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/wicky_wang@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">网站功能持续更新中...</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Aura%E7%BB%84%E4%BB%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">Aura组件的工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Aura%E7%BB%84%E4%BB%B6%E7%9A%84%E4%BA%A4%E4%BA%92%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">Aura组件的交互方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Value-Providers"><span class="toc-number">1.2.</span> <span class="toc-text">Value Providers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#aura%E7%BB%84%E4%BB%B6%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E7%AB%AFApex"><span class="toc-number">1.3.</span> <span class="toc-text">aura组件请求服务端Apex</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.4.</span> <span class="toc-text">响应格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E5%8F%B0%E4%BC%A0%E5%8F%82%E7%BB%99%E6%9C%8D%E5%8A%A1%E7%AB%AFApex%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91"><span class="toc-number">1.4.1.</span> <span class="toc-text">前台传参给服务端Apex的一些坑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Date"><span class="toc-number">1.4.2.</span> <span class="toc-text">Date</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E4%BC%A0%E5%8F%82%E7%BB%99%E5%89%8D%E5%8F%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91"><span class="toc-number">1.4.3.</span> <span class="toc-text">后台传参给前台的一些坑</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/03/28/Salesforce_AuraCmpLifeCycle/" title="Aura组件的生命周期"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件的生命周期"/></a><div class="content"><a class="title" href="/2022/03/28/Salesforce_AuraCmpLifeCycle/" title="Aura组件的生命周期">Aura组件的生命周期</a><time datetime="2022-03-28T02:00:00.000Z" title="发表于 2022-03-28 10:00:00">2022-03-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/28/Salesforce_AuraWorks/" title="Aura组件的工作原理"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件的工作原理"/></a><div class="content"><a class="title" href="/2022/03/28/Salesforce_AuraWorks/" title="Aura组件的工作原理">Aura组件的工作原理</a><time datetime="2022-03-28T02:00:00.000Z" title="发表于 2022-03-28 10:00:00">2022-03-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件属性"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraAttributes/" title="Aura组件属性">Aura组件属性</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件ID"/></a><div class="content"><a class="title" href="/2022/02/26/Salesforce_AuraComponentId/" title="Aura组件ID">Aura组件ID</a><time datetime="2022-02-26T12:00:00.000Z" title="发表于 2022-02-26 20:00:00">2022-02-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构"><img src="/./img/SFDC_Fujishan.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aura组件结构"/></a><div class="content"><a class="title" href="/2022/01/13/Salesforce_AuraBasic/" title="Aura组件结构">Aura组件结构</a><time datetime="2022-01-13T02:00:00.000Z" title="发表于 2022-01-13 10:00:00">2022-01-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wick Wang</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="6616884206" data-server="netease" data-type="playlist" data-theme="#FF4081" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="auto" data-autoplay="true" muted></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

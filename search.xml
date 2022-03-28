@@ -382,6 +382,125 @@
       </tags>
   </entry>
   <entry>
+    <title>Aura组件的生命周期</title>
+    <url>/2022/03/28/Salesforce_AuraCmpLifeCycle/</url>
+    <content><![CDATA[<h1 id="Aura组件的生命周期"><a href="#Aura组件的生命周期" class="headerlink" title="Aura组件的生命周期"></a>Aura组件的生命周期</h1><h2 id="什么是组件的生命周期？"><a href="#什么是组件的生命周期？" class="headerlink" title="什么是组件的生命周期？"></a>什么是组件的生命周期？</h2><p>生命周期，故名思意，就是一个物体，从出生，成长，再到它毁灭所经历的一系列阶段。组件也有生命周期的概念，用来描绘组件从创建到销毁的一个过程,在这过程中,每个特定的阶段都会触发一些方法。通常呢，一个组件完整的生命周期中都会经历下面的过程:</p>
+<ul>
+<li>构造 → 组件实例化后的准备阶段  </li>
+<li>渲染 → 组件被添加到dom tree，接下去要进行的渲染阶段  </li>
+<li>更新 → 用户操作组件，组件的更新阶段  </li>
+<li>移除 → 组件用完后从dom tree中移除</li>
+</ul>
+<h2 id="DOM-Document-Object-Modal"><a href="#DOM-Document-Object-Modal" class="headerlink" title="DOM(Document Object Modal)"></a>DOM(Document Object Modal)</h2><p>通过Lightning框架提供的custom renderer函数可以管理和更新组件预定义的DOM结构。</p>
+<p><strong>那什么是DOM呢？</strong>  </p>
+<p>HTML和DOM就像是两种不同语言的相同文档，而DOM则被表示为一个JavaScript对象。如果我们修改DOM上的任何东西，HTML也会自动刷新。如果我们在HTML上添加新的元素，DOM也会随之改变，这都是同步发生的，浏览器会去处理这些事。</p>
+<p>很多文档对DOM的描述过于复杂，推荐大家看下边这个视频去了解DOM:</p>
+<p><a href="https://www.bilibili.com/video/BV1w64y147yM?spm_id_from=333.880.my_history.page.click">老说的 DOM 到底是什么？？</a></p>
+<h2 id="Lightning组件的生命周期"><a href="#Lightning组件的生命周期" class="headerlink" title="Lightning组件的生命周期"></a>Lightning组件的生命周期</h2><p>Lightning Aura组件在其整个生命周期中也会经历构建、渲染，更新，移除的过程。<br>和Lightning Web Component组件不一样，Aura组件的生命周期函数在实际的开发阶段用到的地方不会很多，因为组件的初始化,渲染的整个过程都是由lightning框架完成的。</p>
+<p>我们只需定义Init事件来准备组件初期加载所需要的数据就OK。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:handler</span> <span class="attr">name</span>=<span class="string">“init</span>&quot; <span class="attr">value</span>=<span class="string">&quot;&#123;!this&#125;&quot;</span> <span class="attr">action</span>=<span class="string">“&#123;!c.doInit&#125;</span>&quot;/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>大多数组件都不需要在初始化时更改DOM结构，所以大多数时候只要记住官方提供的几个生命周期内置函数会在哪些时点被触发就可以了。<br>但是，如果我们需要在<code>组件初始化时改变DOM结构</code>, 或者想要在组件插入DOM之后与生成的DOM树交互, 可以考虑以下方式：</p>
+<ol>
+<li>开箱即用的<code>render事件</code></li>
+<li><code>renderer.js</code>创建自定义的渲染逻辑。</li>
+</ol>
+<h3 id="开箱即用的render事件"><a href="#开箱即用的render事件" class="headerlink" title="开箱即用的render事件"></a><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_render_handler.htm">开箱即用的render事件</a></h3><p>当组件被渲染(rendered)或重新渲染(rerendered)时，render event会被触发。该事件可以<code>对DOM进行后处理</code> 或者 <code>对组件的渲染(rendered)或重新渲染(rerendered)作出响应</code>，与在renderer.js中重写<code>afterRender()</code>方法相比，render event更容易使用。  </p>
+<p>render event事件类似于组件初始化用到的init事件处理程序，他们都是在组件的标记中调用。</p>
+<p>用法:<br>在controller.js中中执行onRender Action处理函数，action属性中可以定义任意名称的方法。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:handler</span> <span class="attr">name</span>=<span class="string">&quot;render&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!this&#125;&quot;</span> <span class="attr">action</span>=<span class="string">&quot;&#123;!c.onRender&#125;&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="创建Custom-Renderer-jsr（自定义渲染器）"><a href="#创建Custom-Renderer-jsr（自定义渲染器）" class="headerlink" title="创建Custom Renderer.jsr（自定义渲染器）"></a>创建Custom Renderer.jsr（自定义渲染器）</h3><p>以下是Salesforce官方对Custom Renderer的描述：</p>
+<blockquote>
+<p>Custom Renderer<br>You don’t normally have to write a custom renderer, but it’s useful when you want to interact with the DOM tree after the framework’s rendering service has inserted DOM elements. If you want to customize rendering b&gt;ehavior and you can’t do it in markup or by using the init event, you can create a client-side renderer.</p>
+</blockquote>
+<p>如上所述，在大多数情况下，我们不需要去添加Custom Renderer来改变组件默认的渲染行为。</p>
+<p>只有在以下情况才需要去添加自定义渲染逻辑:  </p>
+<ol>
+<li>组件渲染完毕后，需要与DOM树交互。</li>
+<li>组件加载时，通过cmp中的标签或init事件无法实现的渲染行为。</li>
+</ol>
+<p>在组件Bundle中定义RENDERER.js</p>
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraComponentLifeCycle/AuraLifeCycle_0001.PNG" alt="AuraLifeCycle_0001.png"></p>
+<p>组件在Render(渲染), Rerenderr(重新渲染)或Unrender(被销毁)时，会自动调用不同的渲染函数。我们可以重写这些函数来改变组件的默认渲染行为。</p>
+<p>让我们看一下这些函数在组件加载过程中的执行顺序。</p>
+<ol>
+<li>Init event – 在组件实例化之后被触发，因为发生在构建阶段，通常在此阶段为组件准备初期数据。</li>
+<li>render() – 组件渲染阶段</li>
+<li>afterRender() – 组件插入DOM后，与生成的DOM交互。</li>
+<li>render event – 在组件的render event去执行自定义渲染逻辑，会比自定义render()，afterRender()函数好很多。</li>
+</ol>
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraComponentLifeCycle/AuraLifeCycle_0000.PNG" alt="AuraLifeCycle_0000.png"></p>
+<p>在Renderer.js中重写默认的渲染函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(&#123;   </span><br><span class="line">    <span class="attr">render</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// call Base render method</span></span><br><span class="line">       <span class="keyword">var</span> ret = <span class="built_in">this</span>.superRender();</span><br><span class="line">       <span class="comment">// custom rendering logic here</span></span><br><span class="line">       <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">afterRender</span>: <span class="function"><span class="keyword">function</span> (<span class="params">component, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// call Base afterrender method</span></span><br><span class="line">        <span class="built_in">this</span>.superAfterRender();</span><br><span class="line">        <span class="comment">// interact with the latest DOM tree made by render() function</span></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">rerender</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, helper</span>)</span>&#123;</span><br><span class="line">        <span class="comment">// Call Base rerender method</span></span><br><span class="line">        <span class="built_in">this</span>.superRerender();</span><br><span class="line">        <span class="comment">// custom rerendering logic here</span></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="attr">unrender</span>: <span class="function"><span class="keyword">function</span> (<span class="params">component, helper</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Call Base rerender method</span></span><br><span class="line">        <span class="built_in">this</span>.superUnrender();</span><br><span class="line">        <span class="comment">// custom unrendering logic here</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;<span class="number">0</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="Render"><a href="#Render" class="headerlink" title="Render"></a>Render</h4><p>组件初始化后就会执行,Lightning框架在init事件后会调用render()渲染函数.<br>render()函数通常返回一个DOM节点、一个DOM节点数组，或者什么也不返回。基本HTML组件在渲染组件时需要DOM节点。我们可以使用render函数来修改DOM或者修改组件的markup。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Component1.cmp</span></span><br><span class="line">&lt;aura:component&gt;</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span> <span class="attr">type</span>=<span class="string">&quot;String&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">aura:attribute</span>&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">b</span>&gt;</span>&#123;!v.msg&#125;<span class="tag">&lt;/<span class="name">b</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&lt;/aura:component&gt;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component1Helper.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">changeValue</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component</span>) </span>&#123;</span><br><span class="line">        component.set(<span class="string">&quot;v.msg&quot;</span>,<span class="string">&quot;Changed value before Render&quot;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component1Renderer.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">render</span>: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, helper</span>) </span>&#123;</span><br><span class="line">       <span class="built_in">console</span>.log(<span class="string">&#x27;render&#x27;</span>);</span><br><span class="line">       helper.changeValue(cmp);</span><br><span class="line">       <span class="keyword">return</span> <span class="built_in">this</span>.superRender()</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在render()函数中，在组件被渲染时调用helper方法修改DOM。</p>
+<h4 id="AfterRender"><a href="#AfterRender" class="headerlink" title="AfterRender"></a>AfterRender</h4><p>afterRender函数在render()函数之后被调用。AfterRender函数能够让我们与DOM树进行交互，修改已经完成渲染的组件，这个阶段组件实际上已经插入DOM Tree了。</p>
+<p>Note :</p>
+<ul>
+<li>Render和AfterRender函数只被调用一次，可以在函数中保留只需要运行一次的业务逻辑。</li>
+<li>函数只能被用来修改 DOM或者页面标记标签.</li>
+<li>不要在Render函数中执行DML操作。可以在AfterRender中去做。</li>
+</ul>
+<h4 id="Rerender"><a href="#Rerender" class="headerlink" title="Rerender"></a>Rerender</h4><p>当组件因为用户操作(如按钮点击事件)而发生变化时，会调用Rerender函数。该函数会在组件重新渲染时更新组件。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Component1.cmp</span></span><br><span class="line">&lt;aura:component&gt;</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;truthy&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Boolean&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">aura:attribute</span>&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">aura:if</span> <span class="attr">isTrue</span>=<span class="string">&quot;&#123;!v.truthy&#125;&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">        True</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">aura:set</span> <span class="attr">attribute</span>=<span class="string">&quot;else&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">        False</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">aura:set</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">aura:if</span>&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Check&quot;</span> <span class="attr">press</span>=<span class="string">&quot;&#123;!c.update&#125;&quot;</span>/&gt;</span></span></span><br><span class="line">&lt;/aura:component&gt;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component1Controller.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">update</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        component.set(<span class="string">&quot;v.truthy&quot;</span>,<span class="string">&quot;false&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component1Renderer.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">rerender</span>: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;rerender&#x27;</span>); </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.superRerender()</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在上面的组件中，点击”Check”按钮时，update方法会更新组件，而组件又会调用rerender函数。</p>
+<h4 id="Unrender"><a href="#Unrender" class="headerlink" title="Unrender"></a>Unrender</h4><p>组件销毁时，会触发unrender事件。内置的unrender()函数会删除所有DOM节点，我们可以重写unrender()函数。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Component1.cmp</span></span><br><span class="line">&lt;aura:component &gt;</span><br><span class="line"> </span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;truthy&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Boolean&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">aura:attribute</span>&gt;</span></span></span><br><span class="line">     </span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">aura:if</span> <span class="attr">isTrue</span>=<span class="string">&quot;&#123;!v.truthy&#125;&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">c:Component2</span> /&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">aura:set</span> <span class="attr">attribute</span>=<span class="string">&quot;else&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">        Second Component is deleted</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">aura:set</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">aura:if</span>&gt;</span></span></span><br><span class="line">     </span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">ui:button</span> <span class="attr">aura:id</span>=<span class="string">&quot;button&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Check&quot;</span> <span class="attr">press</span>=<span class="string">&quot;&#123;!c.update&#125;&quot;</span>/&gt;</span></span></span><br><span class="line">&lt;/aura:component&gt;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component1Controller.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">update</span> : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        component.set(<span class="string">&quot;v.truthy&quot;</span>,<span class="string">&quot;false&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component1Renderer.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">rerender</span>: <span class="function"><span class="keyword">function</span>(<span class="params">cmp, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;rerender&#x27;</span>); </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.superRerender()</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component2.cmp</span></span><br><span class="line">&lt;aura:component &gt;</span><br><span class="line">    I am <span class="keyword">in</span> second component</span><br><span class="line">&lt;/aura:component&gt;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//Component2Renderer.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">unrender</span> : <span class="function"><span class="keyword">function</span> (<span class="params">cmp, helper</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;Component 2 unrender &#x27;</span>); </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.superUnrender();</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在点击Component1.cmp上的”Check”按钮时，Component2被删除。删除时会调用Component2Renderer.js中定义的unrender方法。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Salesforce Lightning组件框架为我们提供了四个渲染阶段。</p>
+<table>
+<thead>
+<tr>
+<th>render()</th>
+<th>afterRender()</th>
+<th>rerender()</th>
+<th>rerender()</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>在组件初始化后重写基础render()函数。</td>
+<td>在插入DOM元素后，通过afterRender()函数更新DOM树。</td>
+<td>由于组件发生任何变化而触发的。</td>
+<td>当组件被销毁时调用</td>
+</tr>
+<tr>
+<td>需要调用 superRender() 方法</td>
+<td>需要调用 superAfterRender() 方法.</td>
+<td>需要调用 superRerender() 方法</td>
+<td>需要调用 superUnrender() 方法.</td>
+</tr>
+<tr>
+<td>返回 DOM 或者 NULL</td>
+<td>不需要返回值</td>
+<td>不需要返回值</td>
+<td>不需要返回值</td>
+</tr>
+<tr>
+<td>在default rendering时，任何内容都需要更改。</td>
+<td>如果组件初始化时需要DML操作，可以将逻辑放在afterRender()函数中，而不是写在init()函数中。</td>
+<td>如果组件发生任何改变，就会触发它，就像按钮禁用后单击按钮显示一些结果。</td>
+<td>如果组件由于aura:if或者组件没有被有根据条件式地显示，此时该组件的unrender()函数将被触发。</td>
+</tr>
+</tbody></table>
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraComponentLifeCycle/AuraLifeCycle_0002.PNG" alt="AuraLifeCycle_0002.png"></p>
+]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce Aura</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Aura基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Aura组件ID</title>
     <url>/2022/02/26/Salesforce_AuraComponentId/</url>
     <content><![CDATA[<h1 id="组件的ID"><a href="#组件的ID" class="headerlink" title="组件的ID"></a>组件的ID</h1><p>HTML文档是一棵DOM树,树上有很多节点,每个节点一般都会有id属性,id属性具有唯一性,在同一个文档中不能重复,id是该节点的唯一标识。而Aura的组件元素中并不支持Id属性,它有两种类型的ID: Local ID和Global ID。local ID用于定位画面中的aura元素,global ID用于区分同一组件的多个实例,有时在调试代码时也会用到。</p>
@@ -419,6 +538,136 @@
 </blockquote>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Retrieve Global Id from JavaScript:</span></span><br><span class="line">component.getGlobalId()</span><br><span class="line">component.find(“buttonId”).getGlobalId()</span><br><span class="line">event.getSource().getGlobalId() </span><br></pre></td></tr></table></figure>
 ]]></content>
+      <categories>
+        <category>Salesforce</category>
+        <category>Salesforce Aura</category>
+      </categories>
+      <tags>
+        <tag>Salesforce</tag>
+        <tag>Lightning</tag>
+        <tag>Aura基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Aura组件的工作原理</title>
+    <url>/2022/03/28/Salesforce_AuraWorks/</url>
+    <content><![CDATA[<h1 id="Aura组件的工作原理"><a href="#Aura组件的工作原理" class="headerlink" title="Aura组件的工作原理"></a>Aura组件的工作原理</h1><h2 id="Aura组件的交互方式"><a href="#Aura组件的交互方式" class="headerlink" title="Aura组件的交互方式"></a>Aura组件的交互方式</h2><p>掌握Aura组件客户端与服务器端通信时的工作步骤对于合理的构建组件非常有帮助。<br>下图会详细说明一个Lightning组件是如何在<code>客户端和服务端</code>之间进行工作的:</p>
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraWorks/AuraWork_0000.png" alt="AuraWork_0000.png"></p>
+<p>组件的component bundle是由’Component(.cmp) &#x2F; Controller js(.js) &#x2F; Helper js(.js)’<br>这三部分构成的。在构建组件时有时会很困惑controller.js和helper.js的职责所在，毕竟helper.js即使没有组件也不会报错。</p>
+<ol>
+<li><p>用户打开页面或者调用组件时，组件会被初始化。</p>
+</li>
+<li><p>组件初始化时，如果定义了init事件，那么首先init事件将会自动触发。页面初期用到的数据都需要在该事件内获取和设定。</p>
+</li>
+<li><p>当用户与页面发生交互时，比如点击按钮或者触发某个自定义事件，controller.js中定义的事件方法会被触发。</p>
+ <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 比如在controller.js中执行save方法</span></span><br><span class="line"><span class="attr">save</span>: <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>)</span>&#123;</span><br><span class="line">    helper.requestAccountData(component)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内置的component参数 &#x3D;&gt; 可以获得当前组件中的任意元素</li>
+<li>内置的event参数 &#x3D;&gt; 可以捕捉到事件源，获取事件源元素的各种属性</li>
+<li>内置的helper参数 &#x3D;&gt; 可以调用helper.js中的函数</li>
+</ul>
+</li>
+<li><p>在helper.js的函数中向服务端的apex设定请求参数,然后发出请求，</p>
+</li>
+<li><p>Apex controller中定义的@AuraEnabled声明的Apex方法被调用，返回页面需要的数据。</p>
+</li>
+<li><p>接收到返回结果后，js函数中创建的callback方法被执行来处理服务端的返回结果。</p>
+</li>
+<li><p>callback函数内将返回的数据set到aura:attribute中，页面重新渲染。</p>
+</li>
+<li><p>页面重新加载后，用户就能看到页面中显示的数据了。</p>
+</li>
+</ol>
+<p>当然，也可以把helper.js中请求后台apex的函数直接定义在controller.js中，直接从controller.js来处理后台返回的数据，但该模式不便<br>与维护，不推荐使用。</p>
+<h2 id="Value-Providers"><a href="#Value-Providers" class="headerlink" title="Value Providers"></a>Value Providers</h2><p><a href="https://developer.salesforce.com/docs/atlas.en-us.200.0.lightning.meta/lightning/expr_source.htm">https://developer.salesforce.com/docs/atlas.en-us.200.0.lightning.meta/lightning/expr_source.htm</a></p>
+<h2 id="aura组件请求服务端Apex"><a href="#aura组件请求服务端Apex" class="headerlink" title="aura组件请求服务端Apex"></a><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm">aura组件请求服务端Apex</a></h2><p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraWorks/AuraWork_0001.png" alt="AuraWork_0001.png"></p>
+<p>举一个非常简单的例子，将值从客户端传递到服务器端。在一个Lightning组件中，服务器端调用。</p>
+<ol>
+<li>页面和后台需要交互的数据保存在组件cmp文件的aura:attribute中。</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--AuraMethodExample.cmp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aura:component</span> <span class="attr">description</span>=<span class="string">&quot;ApexMethodExample&quot;</span> <span class="attr">controller</span>=<span class="string">&quot;ApexControllerSample&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;countries&quot;</span> <span class="attr">type</span>=<span class="string">&quot;List&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;selectedCountry&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aura:handler</span> <span class="attr">name</span>=<span class="string">&quot;init&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!this&#125;&quot;</span> <span class="attr">action</span>=<span class="string">&quot;&#123;!c.loadCountries&#125;&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">lightning:select</span> <span class="attr">name</span>=<span class="string">&quot;colorId&quot;</span> <span class="attr">label</span>=<span class="string">&quot;Select a Country:&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!v.selectedCountry&#125;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aura:iteration</span> <span class="attr">items</span>=<span class="string">&quot;&#123;!v.countries&#125;&quot;</span> <span class="attr">var</span>=<span class="string">&quot;option&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">option</span> <span class="attr">text</span>=<span class="string">&quot;&#123;!option&#125;&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&#123;!option&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">aura:iteration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">lightning:select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aura:component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>客户端的JavaScript controller去调用Apex中的方法，传递参数。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// AuraMethodExample.js</span></span><br><span class="line">(&#123;</span><br><span class="line">    <span class="attr">loadCountries</span>: <span class="function"><span class="keyword">function</span> (<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> action = component.get(<span class="string">&quot;c.getCountries&quot;</span>);</span><br><span class="line">        action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">var</span> state = response.getState();</span><br><span class="line">            <span class="keyword">if</span>(state == <span class="string">&#x27;SUCCESS&#x27;</span>) &#123;</span><br><span class="line">                component.set(<span class="string">&#x27;v.countries&#x27;</span>, response.getReturnValue());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">// A client-side action could cause multiple events, </span></span><br><span class="line">        <span class="comment">// which could trigger other events and </span></span><br><span class="line">        <span class="comment">// other server-side action calls.</span></span><br><span class="line">        <span class="comment">// $A.enqueueAction adds the server-side action to the queue.</span></span><br><span class="line">        $A.enqueueAction(action);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/cloudScript/blogImages/raw/master/Salesforce_AuraWorks/AuraWork_0002.png" alt="AuraWork_0002.png"></p>
+<ol>
+<li>服务端的Apex controller需要接收，使用这些值去更改database中的数据。</li>
+</ol>
+<ul>
+<li>服务端被aura组件请求的apex方法:<ul>
+<li>该apex方法必须用@AuraEnabled声明。 </li>
+<li>该apex方法必须是静态的</li>
+<li>权限修饰符为 public 或者 global。</li>
+<li>确保Action方法名在组件中是唯一的。如果在js controller中定义的action名与其他函数名相同，可能会导致难以调试的问题。在调试模式下，框架会记录一个关于客户端和服务器端动作名称冲突的浏览器控制台警告。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> with sharing <span class="class"><span class="keyword">class</span> <span class="title">ApexControllerSample</span> </span>&#123;</span><br><span class="line">    <span class="comment">//Use @AuraEnabled to enable client- and server-side access to the method</span></span><br><span class="line">    <span class="meta">@AuraEnabled</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">getCountries</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; countries = <span class="keyword">new</span> List&lt;String&gt;();</span><br><span class="line">        countries.add(<span class="string">&#x27;China&#x27;</span>);</span><br><span class="line">        countries.add(<span class="string">&#x27;USA&#x27;</span>);</span><br><span class="line">        countries.add(<span class="string">&#x27;India&#x27;</span>);</span><br><span class="line">        <span class="keyword">return</span> countries;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="响应格式"><a href="#响应格式" class="headerlink" title="响应格式"></a>响应格式</h2><p>客户端调用服务端的Apex方法十分简单，Lightning已经对这块做了很不错的封装，但有时我们会因为参数类型的问题导致一些莫名奇妙的报错，下面就带大家看下具体的例子已经解决方法。</p>
+<h3 id="前台传参给服务端Apex的一些坑"><a href="#前台传参给服务端Apex的一些坑" class="headerlink" title="前台传参给服务端Apex的一些坑"></a>前台传参给服务端Apex的一些坑</h3><h3 id="Date"><a href="#Date" class="headerlink" title="Date"></a>Date</h3><p>不能在AuraEnabled方法中使用Date类型作为参数，否则接收的参数值总是null</p>
+<p>Component</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;myDate&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Date&quot;</span> <span class="attr">default</span>=<span class="string">&quot;1981–08–26&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(Date myDate)</span> </span>&#123;</span><br><span class="line">    System.debug(myDate); <span class="comment">// --&gt; null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解决方法：  </p>
+<p>将Date类型参数作为字符串传递，然后将其转换为date:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(String myDate)</span> </span>&#123;</span><br><span class="line">    Date myNewDate = Date.valueOf(myDate);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Apex Class</p>
+<p>如果你想用一种特定的格式传递数据，而不手动编写json对象，使用Apex class类型的aura:attribute会很方便。<br>例如，如果你想在某些时候使用SelectOption作为参数在前后台交互。</p>
+<p>Apex NewWrapperClass</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewWrapperClass</span> </span>&#123;</span><br><span class="line">  <span class="meta">@AuraEnabled</span></span><br><span class="line">  <span class="keyword">public</span> String label &#123;get; set;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Component</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aura:attribute</span> <span class="attr">name</span>=<span class="string">&quot;myApexClass&quot;</span> <span class="attr">type</span>=<span class="string">&quot;NewWrapperClass&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Client-side Controller</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">callServer : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myClass = component.get(<span class="string">&quot;v.myApexClass&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> action = component.get(<span class="string">&quot;c.setApexClassType&quot;</span>);</span><br><span class="line">        action.setParams(&#123; <span class="string">&quot;myApexClass&quot;</span> : myClass &#125;);</span><br><span class="line">        action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Do stuff</span></span><br><span class="line">        &#125;);</span><br><span class="line">    $A.enqueueAction(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Static <span class="keyword">void</span> <span class="title">setApexClassType</span><span class="params">(NewWrapperClass myApexClass)</span> </span>&#123;</span><br><span class="line">  System.debug(myApexClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码会发现，直接使用内部类Apex Class作为参数去接受客户端js传过来的参数，<br>会发生报错: <code>An internal server error has occurred.</code></p>
+<p>解决方法：<br>传递一个Apex类到AuraEnabled方法中的最好方法就是在客户端JS中stringify它，将其变为字符串。<br>然后在Apex反序列化(deserialize)。下面的代码将工作良好:</p>
+<p>Client-side Controller</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">callServer : <span class="function"><span class="keyword">function</span>(<span class="params">component, event, helper</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myClass = component.get(<span class="string">&quot;v.myApexClass&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> action = component.get(<span class="string">&quot;c.setApexClassType&quot;</span>);</span><br><span class="line">        action.setParams(&#123; <span class="string">&quot;myApexClass&quot;</span>: <span class="built_in">JSON</span>.stringify(myClass) &#125;);</span><br><span class="line">        action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Do stuff</span></span><br><span class="line">        &#125;);</span><br><span class="line">    $A.enqueueAction(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setApexClassType</span><span class="params">(String myApexClass)</span> </span>&#123;</span><br><span class="line">  NewWrapperClass nwc = (NewWrapperClass)JSON.deserialize(myApexClass, NewWrapperClass.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Set</p>
+<p>不能使用Set类型作为参数，如果你保存一个参数类型为Set的AuraEnabled方法，会看到以下错误消息，阻止你保存:</p>
+<p><code>Parameter type does not support AuraEnabled: Set&lt;String&gt;.</code></p>
+<p>所以，在作成前后交互的参数时，用<code>List 和 Map 代替Set</code></p>
+<p>Base64</p>
+<p>传递一个文件到你的Apex方法。不要忘记对文件进行编码&#x2F;解码:</p>
+<p>Client-side Controller</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> action = component.get(<span class="string">&quot;c.setFile&quot;</span>);</span><br><span class="line">action.setParams(&#123; <span class="attr">myBase64File</span> : <span class="built_in">encodeURIComponent</span>(base64File) &#125;);</span><br><span class="line">action.setCallback(<span class="built_in">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">   <span class="keyword">var</span> state = response.getState();</span><br><span class="line">  <span class="keyword">if</span> (state === “SUCCESS”) &#123;</span><br><span class="line">    <span class="comment">// Do stuff</span></span><br><span class="line">  &#125; </span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(state);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">$A.enqueueAction(action);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Server-side Controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFile</span><span class="params">(String myBase64File)</span> </span>&#123;</span><br><span class="line">    String myFile = EncodingUtil.urlDecode(myBase64File, <span class="string">&#x27;UTF-8&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后台传参给前台的一些坑"><a href="#后台传参给前台的一些坑" class="headerlink" title="后台传参给前台的一些坑"></a>后台传参给前台的一些坑</h3><p>服务端处理完成后需要要给页面一个响应信息。经常会用到以下几种响应格式:</p>
+<ol>
+<li>返回Map&lt;String, Object&gt;格式</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AuraEnabled</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, Object&gt; <span class="title">getCaseOptions</span><span class="params">(String xxxxx)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; resultMap = <span class="keyword">new</span> Map&lt;String, Object&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        resultMap.put(<span class="string">&#x27;searchResult&#x27;</span>, <span class="string">&#x27;Success&#x27;</span>);</span><br><span class="line">        Map&lt;String, String&gt; caseMap = <span class="keyword">new</span> Map&lt;String, String&gt;();</span><br><span class="line">        resultMap.put(<span class="string">&#x27;data&#x27;</span>, caseMap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        System.debug(<span class="string">&#x27;errorLine log : &#x27;</span> + e.getLineNumber());</span><br><span class="line">        resultMap.put(<span class="string">&#x27;searchResult&#x27;</span>, <span class="string">&#x27;Fail&#x27;</span>);</span><br><span class="line">        resultMap.put(<span class="string">&#x27;ErrorMsg&#x27;</span>, e.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> resultMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ...callBack在此处省略...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> returnData = response.getReturnValue();</span><br><span class="line"><span class="keyword">if</span> (returnData[<span class="string">&quot;searchResult&quot;</span>] === <span class="string">&quot;Success&quot;</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> data = returnData[<span class="string">&quot;data&quot;</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>做一个 Aura Response Class去返回</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuraResponse</span> </span>&#123; </span><br><span class="line">    <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> String responseCode &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; messages &#123;get; set;&#125;</span><br><span class="line">     </span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; infoMessages &#123;get; set;&#125;</span><br><span class="line">     </span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; warnMessages &#123;get; set;&#125;</span><br><span class="line">     </span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> List&lt;LightningMessage&gt; errorMessages &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Map&lt;String,String&gt; validateErrorMessages &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Object result &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Object userInfo &#123;get; set;&#125;</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Date executeDate = System.today();</span><br><span class="line"></span><br><span class="line">     <span class="meta">@AuraEnabled</span></span><br><span class="line">     <span class="keyword">public</span> Datetime executeDatetime = System.now();</span><br><span class="line"></span><br><span class="line">     <span class="comment">/**</span></span><br><span class="line"><span class="comment">      * Constructor</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="title">AuraResponse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ...callBack在此处省略...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Get the messages of RetunValue</span></span><br><span class="line"><span class="keyword">var</span> messages = response.getReturnValue().messages;</span><br><span class="line"><span class="comment">// Get the messages of RetunValue</span></span><br><span class="line"><span class="keyword">var</span> result = response.getReturnValue().result;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Salesforce</category>
         <category>Salesforce Aura</category>
